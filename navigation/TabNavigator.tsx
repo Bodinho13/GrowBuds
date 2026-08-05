@@ -1,12 +1,14 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import DashboardScreen from "../screens/DashboardScreen";
-import PlantsScreen from "../screens/PlantsScreen";
 import CalendarScreen from "../screens/CalendarScreen";
 import TasksScreen from "../screens/TasksScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import PlantsStack from "./PlantsStack";
 
-const Tab = createBottomTabNavigator();
+import type { TabParamList } from "./types";
+
+const Tab = createBottomTabNavigator<TabParamList>();
 
 export default function TabNavigator() {
     return (
@@ -18,7 +20,8 @@ export default function TabNavigator() {
 
             <Tab.Screen 
                 name="Pflanzen"
-                component={PlantsScreen}
+                component={PlantsStack}
+                options={{ headerShown: false }}
             />
 
             <Tab.Screen 
