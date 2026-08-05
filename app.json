@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Grow-Up",
-    "slug": "Grow-Up",
+    "name": "Grow-Buds",
+    "slug": "grow-buds",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
