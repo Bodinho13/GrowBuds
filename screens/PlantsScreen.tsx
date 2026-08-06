@@ -1,28 +1,36 @@
-import { View, Text, StyleSheet } from "react-native";
-
+import { FlatList, Text, StyleSheet } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { PlantsStackParamList, TabParamList } from "../navigation/types";
+
+import type { PlantsStackParamList } from "../navigation/types";
+import { usePlants } from "../hooks/usePlants";
+import PlantCard from "../components/PlantCard";
 
 type Props = NativeStackScreenProps<PlantsStackParamList, "PlantsList">;
 
 export default function PlantsScreen({ navigation }: Props) {
+  const { plants, loading } = usePlants();
+
+  if (loading) {
+    return <Text>Lade Pflanzen...</Text>;
+  } else {
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>
-                Meine Pflanzen
-            </Text>
-        </View>
+      <FlatList
+        data={plants}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <PlantCard plant={item} />}
+      />
     );
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: "bold",
-    },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
 });
