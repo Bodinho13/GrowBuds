@@ -5,6 +5,8 @@ import type { PlantsStackParamList } from "../navigation/types";
 import { usePlants } from "../hooks/usePlants";
 import PlantCard from "../components/PlantCard";
 
+import { Typography } from "../theme";
+
 type Props = NativeStackScreenProps<PlantsStackParamList, "PlantsList">;
 
 export default function PlantsScreen({ navigation }: Props) {
@@ -30,7 +32,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 24,
+    fontSize: Typography.title,
     fontWeight: "bold",
   },
 });

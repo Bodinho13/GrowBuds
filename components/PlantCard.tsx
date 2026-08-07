@@ -2,6 +2,8 @@ import { StyleSheet, Text, View } from "react-native";
 
 import type { Plant } from "../types/Plant";
 
+import { Colors, Spacing, Radius, Typography } from "../theme";
+
 type PlantCardProps = {
     plant: Plant;
 }
@@ -30,13 +32,13 @@ export default function PlantCard ({ plant }: PlantCardProps) {
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: "#ffffff",
-        padding: 16,
-        marginHorizontal: 16,
-        marginVertical: 8,
-        borderRadius: 12,
+        backgroundColor: Colors.surface,
+        padding: Spacing.md,
+        marginHorizontal: Spacing.md,
+        marginVertical: Spacing.sm,
+        borderRadius: Radius.lg,
 
-        shadowColor: "#000",
+        shadowColor: Colors.shadow,
         shadowOpacity: 0.08,
         shadowRadius: 6,
         shadowOffset: {
@@ -48,12 +50,12 @@ const styles = StyleSheet.create({
     },
 
     name: {
-        fontSize: 18,
+        fontSize: Typography.subHeading,
         fontWeight: "600",
     },
 
     subtitle: {
-        marginTop: 4,
-        color: "#666",
+        marginTop: Spacing.xs,
+        color: Colors.textSecondary,
     },
 });
