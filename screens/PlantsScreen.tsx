@@ -19,7 +19,12 @@ export default function PlantsScreen({ navigation }: Props) {
       <FlatList
         data={plants}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <PlantCard plant={item} />}
+        renderItem={({ item }) => (
+            <PlantCard 
+                plant={item} 
+                onPress={() => navigation.navigate("PlantDetail", {plantId: item.id})}
+            />
+        )}
       />
     );
   }
