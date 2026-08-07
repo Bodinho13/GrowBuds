@@ -9,6 +9,7 @@ export const mockPlants: Plant[] = [
         id: "plant-001",
         name: "Northern Lights",
         strain: "Indica",
+        notes: "Mock Data for a Plant",
         createdAt: new Date(),
         updatedAt: new Date(),
         isArchived: false,
