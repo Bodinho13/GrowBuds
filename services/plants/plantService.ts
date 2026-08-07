@@ -4,11 +4,11 @@ import { mockPlants } from "../../constants/mockData";
 
 class PlantService {
     
-    async getPlants(): Promise<Plant[]> {
+    async getAll(): Promise<Plant[]> {
         return mockPlants;
     }
 
-    async getPlant(id: string): Promise<Plant | undefined> {
+    async getById(id: string): Promise<Plant | undefined> {
         return mockPlants.find(plant => plant.id === id);
     }
 

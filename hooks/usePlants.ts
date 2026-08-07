@@ -13,7 +13,7 @@ export function usePlants() {
     }, []);
 
     async function loadPlants() {
-        const result = await PlantService.getPlants();
+        const result = await PlantService.getAll();
 
         setPlants(result);
         setLoading(false);
