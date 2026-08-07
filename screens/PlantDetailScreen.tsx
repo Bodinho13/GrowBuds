@@ -4,6 +4,7 @@ import { Colors, Spacing, Typography } from "../theme";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { PlantsStackParamList } from "../navigation/types";
 import { usePlant } from "../hooks/usePlant";
+import { EmptyState, LoadingView } from "../components/common";
 
 type Props = NativeStackScreenProps<PlantsStackParamList, "PlantDetail">;
 
@@ -13,19 +14,11 @@ export default function PlantDetailScreen({route}: Props) {
     const {plant, loading,} = usePlant(plantId);
 
     if(loading) {
-        return (
-            <View style={styles.center}>
-                <Text>Lade Pflanze...</Text>
-            </View>
-        );
+        return <LoadingView/>;
     }
 
     if(!plant) {
-        return (
-            <View style={styles.center}>
-                <Text>Pflanze nicht gefunden.</Text>
-            </View>
-        );
+        return <EmptyState message="Pflanze nicht gefunden." />;
     }
 
     return (
