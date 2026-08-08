@@ -1,15 +1,15 @@
-import type { Plant } from "../../types/Plant";
+import { PlantRepository } from "./plantRepository";
 
-import { mockPlants } from "../../constants/mockData";
+const repository = new PlantRepository();
 
 class PlantService {
     
-    async getAll(): Promise<Plant[]> {
-        return mockPlants;
+    async getAll() {
+        return repository.getAll();
     }
 
-    async getById(id: string): Promise<Plant | undefined> {
-        return mockPlants.find(plant => plant.id === id);
+    async getById(id: string) {
+        return repository.getById(id);
     }
 
 }
