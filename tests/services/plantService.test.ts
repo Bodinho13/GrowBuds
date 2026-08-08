@@ -1,4 +1,5 @@
 import PlantService from "../../services/plants";
+import type { CreatePlantDto } from "../../types/dto/CreatePlantDto";
 
 describe("PlantService", () => {
 
@@ -17,5 +18,20 @@ describe("PlantService", () => {
     it("returns undefined for unknown plant id", async () => {
         const plant = await PlantService.getById("invalid-id");
         expect(plant).toBeUndefined();
+    });
+
+    it("creates a plant", async () => {
+        const dto: CreatePlantDto = {
+            name: "test Plant",
+            breeder: "tester",
+        };
+        const plant = await PlantService.create(dto);
+
+        expect(plant.name).toBe("test Plant");
+        expect(plant.breeder).toBe("tester");
+        expect(plant.id).toBeDefined();
+        expect(plant.createdAt).toBeInstanceOf(Date);
+        expect(plant.updatedAt).toBeInstanceOf(Date);
+        expect(plant.isArchived).toBe(false);
     });
 });
