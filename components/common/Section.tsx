@@ -30,5 +30,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: Colors.text,
         marginBottom: Spacing.sm,
+        justifyContent: "center",
+        alignSelf: "center",
     },
 });

@@ -22,6 +22,7 @@ export const mockGrows: Grow[] = [
         plantId: "plant-001",
         name: "Indoor Frühling 2026",
         startDate: new Date("2026-03-01"),
+        amount: 1,
         stage: GrowStage.Vegetative,
         medium: GrowMedium.Soil,
         location: "Grow Room",

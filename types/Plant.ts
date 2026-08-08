@@ -2,7 +2,7 @@ export interface Plant {
     id: string;
     name: string;
     strain?: string;
-    parents?: string;
+    cross?: string;
     breeder?: string;
     notes?: string;
     createdAt: Date;

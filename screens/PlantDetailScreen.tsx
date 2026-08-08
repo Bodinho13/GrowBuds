@@ -28,8 +28,8 @@ export default function PlantDetailScreen({ route }: Props) {
       <Section title="Allgemein">
         {plant.strain && <Text style={styles.text}>Sorte: {plant.strain}</Text>}
 
-        {plant.parents && (
-          <Text style={styles.text}>Kreuzung: {plant.parents}</Text>
+        {plant.cross && (
+          <Text style={styles.text}>Kreuzung: {plant.cross}</Text>
         )}
 
         {plant.breeder && (

@@ -7,9 +7,11 @@ export interface Grow {
     name: string;
     startDate: Date;
     endDate?: Date;
+    amount: number;
     stage: GrowStage;
     medium: GrowMedium;
     location?: string;
+    weight?: number;
     createdAt: Date;
     updatedAt: Date;
     isArchived: boolean;
