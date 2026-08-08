@@ -15,4 +15,12 @@ export class PlantRepository {
         mockPlants.push(plant);
         return plant;
     }
+    
+    async update(plant: Plant): Promise<Plant | undefined> {
+        const index = mockPlants.findIndex(existingPlant => existingPlant.id === plant.id);
+        if(index === -1) 
+            return undefined;
+        mockPlants[index] = plant;
+        return plant;
+    }
 }
