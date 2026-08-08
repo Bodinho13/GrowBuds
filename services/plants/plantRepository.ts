@@ -10,4 +10,9 @@ export class PlantRepository {
     async getById(id: string): Promise<Plant | undefined> {
         return mockPlants.find(plant => plant.id === id);
     }
+
+    async create(plant: Plant): Promise<Plant> {
+        mockPlants.push(plant);
+        return plant;
+    }
 }
