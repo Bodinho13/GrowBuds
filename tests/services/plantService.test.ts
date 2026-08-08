@@ -34,4 +34,29 @@ describe("PlantService", () => {
         expect(plant.updatedAt).toBeInstanceOf(Date);
         expect(plant.isArchived).toBe(false);
     });
+
+    it("updates a plant", async () => {
+        const plant = await PlantService.create({
+            name: "original Plant",
+            breeder: "Tester",
+        });
+
+        const updatedPlant = await PlantService.update(
+            plant.id,
+            {
+                name: "Updated Plant",
+            }
+        );
+
+        expect(updatedPlant).toBeDefined();
+        expect(updatedPlant?.id).toBe(plant.id);
+        expect(updatedPlant?.name).toBe("Updated Plant");
+        expect(updatedPlant?.breeder).toBe("Tester");
+        expect(updatedPlant?.updatedAt).toBeInstanceOf(Date);
+    });
+
+    it("return undefined when updating a non-existing plant", async () => {
+        const result = await PlantService.update("does-not-exist", {name: "Updated Plant"});
+        expect(result).toBeUndefined();
+    });
 });

@@ -1,9 +1,11 @@
 import { CreatePlantDto } from "../../types/dto/CreatePlantDto";
+import { UpdatePlantDto } from "../../types/dto/UpdatePlantDto";
 import { Plant } from "../../types/Plant";
 
 import { createId } from "../../utils/id";
 
 import { PlantRepository } from "./plantRepository";
+import { PlantId } from "./types";
 
 const repository = new PlantRepository();
 
@@ -33,6 +35,19 @@ class PlantService {
         };
 
         return repository.create(plant);
+    }
+
+    async update(id: PlantId, dto: UpdatePlantDto): Promise<Plant | undefined> {
+        const existingPlant = await repository.getById(id);
+        if(!existingPlant)
+            return undefined;
+
+        const updatedPlant: Plant = {
+            ...existingPlant,
+            ...dto,
+            updatedAt: new Date(),
+        };
+        return repository.update(updatedPlant);
     }
 
 }

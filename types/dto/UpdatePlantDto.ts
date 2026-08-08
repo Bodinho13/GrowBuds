@@ -1,5 +1,5 @@
-export interface CreatePlantDto {
-    name: string;
+export type UpdatePlantDto = {
+    name?: string;
     strain?: string;
     cross?: string;
     breeder?: string;
