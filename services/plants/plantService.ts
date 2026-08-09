@@ -50,6 +50,19 @@ class PlantService {
         return repository.update(updatedPlant);
     }
 
+    async archive(id: string): Promise<Plant | undefined> {
+        const existingPlant = await repository.getById(id);
+        if(!existingPlant)
+            return undefined;
+
+        const archivedPlant: Plant = {
+            ...existingPlant,
+            isArchived: true,
+            updatedAt: new Date()
+        };
+        return repository.update(archivedPlant);
+    }
+
 }
 
 export default new PlantService();

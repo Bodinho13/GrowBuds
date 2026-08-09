@@ -59,4 +59,19 @@ describe("PlantService", () => {
         const result = await PlantService.update("does-not-exist", {name: "Updated Plant"});
         expect(result).toBeUndefined();
     });
+
+    it("archives a plant", async () => {
+        const plant = await PlantService.create({name: "Plant to archive"});
+        const archivedPlant = await PlantService.archive(plant.id);
+
+        expect(archivedPlant).toBeDefined();
+        expect(archivedPlant?.id).toBe(plant.id);
+        expect(archivedPlant?.isArchived).toBe(true);
+        expect(archivedPlant?.updatedAt).toBeInstanceOf(Date);
+    });
+
+    it("returns undefined when archiving a non-existing plant", async () => {
+        const result = await PlantService.archive("does-not-exist");
+        expect(result).toBeUndefined();
+    });
 });
