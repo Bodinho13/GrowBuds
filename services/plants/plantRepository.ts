@@ -1,26 +1,25 @@
 import type { Plant } from "../../types/Plant";
+import type { Storage } from "../storage/storage";
 
+import { MockStorage } from "../storage/mockStorage";
 import { mockPlants } from "../../constants/mockData";
+
+const storage: Storage = new MockStorage({plants: mockPlants});
 
 export class PlantRepository {
     async getAll(): Promise<Plant[]> {
-        return mockPlants;
+        return storage.getAll<Plant>("plants");
     }
 
     async getById(id: string): Promise<Plant | undefined> {
-        return mockPlants.find(plant => plant.id === id);
+        return storage.getById<Plant>("plants", id);
     }
 
     async create(plant: Plant): Promise<Plant> {
-        mockPlants.push(plant);
-        return plant;
+        return storage.create("plants", plant);
     }
     
     async update(plant: Plant): Promise<Plant | undefined> {
-        const index = mockPlants.findIndex(existingPlant => existingPlant.id === plant.id);
-        if(index === -1) 
-            return undefined;
-        mockPlants[index] = plant;
-        return plant;
+        return storage.update("plants", plant.id, plant);
     }
 }
