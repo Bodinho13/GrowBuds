@@ -6,3 +6,8 @@ export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
     await db.execAsync(createTablesSql);
     return db;
 }
+
+export async function initializeDatabase(): Promise<void> {
+    const db = await getDatabase();
+    console.log("SQLite database initialized");
+}
