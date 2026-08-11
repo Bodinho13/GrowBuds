@@ -1,25 +1,66 @@
 import type { Plant } from "../../types/Plant";
-import type { Storage } from "../storage/storage";
 
-import { MockStorage } from "../storage/mockStorage";
-import { mockPlants } from "../../constants/mockData";
+import { SQLiteStorage } from "../storage/sqliteStorage";
+import { getDatabase } from "../storage/database";
 
-const storage: Storage = new MockStorage({plants: mockPlants});
+import { getAllPlantsSql, getPlantByIDSql, createPlantSql, updatePlantSql } from "./plantSql";
+import { toPlant, toPlantRow } from "./mapper";
+import { PlantRow } from "./types";
 
 export class PlantRepository {
+    constructor(
+        private readonly storage: SQLiteStorage
+    ) {}
+
     async getAll(): Promise<Plant[]> {
-        return storage.getAll<Plant>("plants");
+        const rows = await this.storage.getAll<PlantRow>(getAllPlantsSql);
+        return rows.map(toPlant);
     }
 
     async getById(id: string): Promise<Plant | undefined> {
-        return storage.getById<Plant>("plants", id);
+        const row = await this.storage.getFirst<PlantRow>(getPlantByIDSql, [id]);
+        return row ? toPlant(row) : undefined;
     }
 
     async create(plant: Plant): Promise<Plant> {
-        return storage.create("plants", plant);
+        const row = toPlantRow(plant);
+        await this.storage.execute(createPlantSql,
+            [
+                row.id,
+                row.name,
+                row.strain,
+                row.cross,
+                row.breeder,
+                row.notes,
+                row.createdAt,
+                row.updatedAt,
+                row.isArchived,
+            ]
+        );
+        return plant;
     }
     
     async update(plant: Plant): Promise<Plant | undefined> {
-        return storage.update("plants", plant.id, plant);
-    }
+        const row = toPlantRow(plant);
+        const changes = await this.storage.execute(updatePlantSql,
+            [
+                row.name,
+                row.strain,
+                row.cross,
+                row.breeder,
+                row.notes,
+                row.createdAt,
+                row.updatedAt,
+                row.isArchived,
+                row.id,
+            ]
+        );
+        return changes > 0 ? plant : undefined;
+    } 
+}
+
+export async function createPlantRepository(): Promise<PlantRepository> {
+    const db = await getDatabase();
+    const storage = new SQLiteStorage(db);
+    return new PlantRepository(storage);
 }

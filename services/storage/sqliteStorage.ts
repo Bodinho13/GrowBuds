@@ -1,28 +1,20 @@
-import { SQLiteDatabase } from "expo-sqlite";
-import type { Storage } from "./storage";
+import { SQLiteBindParams, SQLiteDatabase } from "expo-sqlite";
 
-export class SQLiteStorage implements Storage {
+export class SQLiteStorage {
     constructor(private readonly db: SQLiteDatabase) {}
 
-    async getAll<T>(collection: string): Promise<T[]> {
-        return this.db.getAllAsync<T>(
-            `SELECT * FROM ${collection}`
-        );
+    async getAll<T>(sql: string, params: SQLiteBindParams = []): Promise<T[]> {
+        return this.db.getAllAsync<T>(sql, params);
     }
 
-    async getById<T>(collection: string, id: string): Promise<T | undefined> {
-        const result =  await this.db.getFirstAsync<T>(
-            `SELECT * FROM ${collection} WHERE id = ?`,
-            id
-        );
+    async getFirst<T>(sql: string, params: SQLiteBindParams = []): Promise<T | undefined> {
+        const result =  await this.db.getFirstAsync<T>(sql, params);
         return result ?? undefined;
     }
 
-    create<T>(collection: string, item: T): Promise<T> {
-        throw new Error("Method not implemented.");
-    }
-    update<T>(collection: string, id: string, item: T): Promise<T | undefined> {
-        throw new Error("Method not implemented.");
+    async execute(sql: string, params: SQLiteBindParams = []): Promise<number> {
+        const result = await this.db.runAsync(sql, params);
+        return result.changes;
     }
     
 }
