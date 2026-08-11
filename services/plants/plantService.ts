@@ -4,19 +4,20 @@ import { Plant } from "../../types/Plant";
 
 import { createId } from "../../utils/id";
 
-import { PlantRepository } from "./plantRepository";
+import type { PlantRepository } from "./types";
 import { PlantId } from "./types";
 
-const repository = new PlantRepository();
-
 class PlantService {
+    constructor(
+        private readonly repository: PlantRepository
+    ) {}
     
     async getAll() {
-        return repository.getAll();
+        return this.repository.getAll();
     }
 
     async getById(id: string) {
-        return repository.getById(id);
+        return this.repository.getById(id);
     }
 
     async create(dto: CreatePlantDto): Promise<Plant> {
@@ -34,11 +35,11 @@ class PlantService {
             isArchived: false,
         };
 
-        return repository.create(plant);
+        return this.repository.create(plant);
     }
 
     async update(id: PlantId, dto: UpdatePlantDto): Promise<Plant | undefined> {
-        const existingPlant = await repository.getById(id);
+        const existingPlant = await this.repository.getById(id);
         if(!existingPlant)
             return undefined;
 
@@ -47,11 +48,11 @@ class PlantService {
             ...dto,
             updatedAt: new Date(),
         };
-        return repository.update(updatedPlant);
+        return this.repository.update(updatedPlant);
     }
 
     async archive(id: string): Promise<Plant | undefined> {
-        const existingPlant = await repository.getById(id);
+        const existingPlant = await this.repository.getById(id);
         if(!existingPlant)
             return undefined;
 
@@ -60,9 +61,9 @@ class PlantService {
             isArchived: true,
             updatedAt: new Date()
         };
-        return repository.update(archivedPlant);
+        return this.repository.update(archivedPlant);
     }
 
 }
 
-export default new PlantService();
+export default PlantService;

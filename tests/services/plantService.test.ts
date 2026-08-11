@@ -1,22 +1,30 @@
 import PlantService from "../../services/plants";
+import { MockPlantRepository } from "../mocks/mockPlantRepository";
 import type { CreatePlantDto } from "../../types/dto/CreatePlantDto";
 
 describe("PlantService", () => {
+    let repository: MockPlantRepository;
+    let plantService: PlantService;
+
+    beforeEach(() => {
+        repository = new MockPlantRepository();
+        plantService = new PlantService(repository);
+    });
 
     it("returns all plants", async () => {
-        const plants = await PlantService.getAll();
+        const plants = await plantService.getAll();
         expect(plants.length).toBeGreaterThan(0);
     });
 
     it("returns a plant by id", async () => {
-        const plants = await PlantService.getAll();
-        const plant = await PlantService.getById(plants[0].id);
+        const plants = await plantService.getAll();
+        const plant = await plantService.getById(plants[0].id);
         expect(plant).toBeDefined();
         expect(plant?.id).toBe(plants[0].id);
     });
 
     it("returns undefined for unknown plant id", async () => {
-        const plant = await PlantService.getById("invalid-id");
+        const plant = await plantService.getById("invalid-id");
         expect(plant).toBeUndefined();
     });
 
@@ -25,7 +33,7 @@ describe("PlantService", () => {
             name: "test Plant",
             breeder: "tester",
         };
-        const plant = await PlantService.create(dto);
+        const plant = await plantService.create(dto);
 
         expect(plant.name).toBe("test Plant");
         expect(plant.breeder).toBe("tester");
@@ -36,12 +44,12 @@ describe("PlantService", () => {
     });
 
     it("updates a plant", async () => {
-        const plant = await PlantService.create({
+        const plant = await plantService.create({
             name: "original Plant",
             breeder: "Tester",
         });
 
-        const updatedPlant = await PlantService.update(
+        const updatedPlant = await plantService.update(
             plant.id,
             {
                 name: "Updated Plant",
@@ -56,13 +64,13 @@ describe("PlantService", () => {
     });
 
     it("return undefined when updating a non-existing plant", async () => {
-        const result = await PlantService.update("does-not-exist", {name: "Updated Plant"});
+        const result = await plantService.update("does-not-exist", {name: "Updated Plant"});
         expect(result).toBeUndefined();
     });
 
     it("archives a plant", async () => {
-        const plant = await PlantService.create({name: "Plant to archive"});
-        const archivedPlant = await PlantService.archive(plant.id);
+        const plant = await plantService.create({name: "Plant to archive"});
+        const archivedPlant = await plantService.archive(plant.id);
 
         expect(archivedPlant).toBeDefined();
         expect(archivedPlant?.id).toBe(plant.id);
@@ -71,7 +79,7 @@ describe("PlantService", () => {
     });
 
     it("returns undefined when archiving a non-existing plant", async () => {
-        const result = await PlantService.archive("does-not-exist");
+        const result = await plantService.archive("does-not-exist");
         expect(result).toBeUndefined();
     });
 });

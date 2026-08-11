@@ -6,8 +6,9 @@ import { getDatabase } from "../storage/database";
 import { getAllPlantsSql, getPlantByIDSql, createPlantSql, updatePlantSql } from "./plantSql";
 import { toPlant, toPlantRow } from "./mapper";
 import { PlantRow } from "./types";
+import type { PlantRepository as IPlantRepository } from "./types";
 
-export class PlantRepository {
+export class PlantRepository implements IPlantRepository {
     constructor(
         private readonly storage: SQLiteStorage
     ) {}
