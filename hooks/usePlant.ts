@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 
-import PlantService from "../services/plants";
+import { useServices } from "../services/ServicesContext";
 
 import type { Plant } from "../types/Plant";
 
 export function usePlant(id: string) {
+    const {plantService} = useServices();
+
     const [plant, setPlant] = useState<Plant | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -13,7 +15,9 @@ export function usePlant(id: string) {
     }, [id]);
 
     async function loadPlant() {
-        const result = await PlantService.getById(id);
+        setLoading(true);
+        
+        const result = await plantService.getById(id);
 
         setPlant(result ?? null);
         setLoading(false);
