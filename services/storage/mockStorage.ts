@@ -1,6 +1,5 @@
 import { Storage } from "./storage";
 
-
 export class MockStorage implements Storage {
     private data: Record<string, unknown[]> = {};
     constructor(initialData: Record<string, unknown[]> = {}) {
