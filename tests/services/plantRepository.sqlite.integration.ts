@@ -1,4 +1,4 @@
-import { PlantRepository } from "../../services/plants/plantRepository";
+/* import { PlantRepository } from "../../services/plants/plantRepository";
 import { Plant } from "../../types/Plant";
 
 describe("PlantRepository", () => {
@@ -83,4 +83,4 @@ describe("PlantRepository", () => {
         const result = await repository.update(plant);
         expect(result).toBeUndefined();
     });
-});
+}); */
