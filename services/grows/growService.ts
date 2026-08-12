@@ -1,17 +1,20 @@
 import type { Grow } from "../../types/Grow";
 
-import { mockGrows } from "../../constants/mockData";
+import { GrowRepository } from "./types";
 
 class GrowService {
+    constructor(
+        private readonly repository: GrowRepository
+    ) {}
     
-    async getGrows(): Promise<Grow[]> {
-        return mockGrows;
+    async getAll(): Promise<Grow[]> {
+        return this.repository.getAll();
     }
 
-    async getGrow(id: string): Promise<Grow | undefined> {
-        return mockGrows.find(grow => grow.id === id);
+    async getById(id: string): Promise<Grow | undefined> {
+        return this.repository.getById(id);
     }
 
 }
 
-export default new GrowService();
+export default GrowService;
