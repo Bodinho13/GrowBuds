@@ -1,7 +1,6 @@
 import type { Plant } from "../../types/Plant";
 
 import { SQLiteStorage } from "../storage/sqliteStorage";
-import { getDatabase } from "../storage/database";
 
 import { getAllPlantsSql, getPlantByIDSql, createPlantSql, updatePlantSql } from "./plantSql";
 import { toPlant, toPlantRow } from "./mapper";
@@ -58,10 +57,4 @@ export class PlantRepository implements IPlantRepository {
         );
         return changes > 0 ? plant : undefined;
     } 
-}
-
-export async function createPlantRepository(): Promise<PlantRepository> {
-    const db = await getDatabase();
-    const storage = new SQLiteStorage(db);
-    return new PlantRepository(storage);
 }

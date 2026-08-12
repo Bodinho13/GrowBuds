@@ -1,11 +1,10 @@
-
-
 export const getAllPlantsSql = `
     SELECT * FROM plants
 `;
 
 export const getPlantByIDSql = `
-    SELECT * FROM plants WHERE id = ?
+    SELECT * FROM plants
+    WHERE id = ?
 `;
 
 export const createPlantSql = `
