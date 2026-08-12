@@ -11,4 +11,9 @@ export class MockGrowRepository {
     async getById(id: string): Promise<Grow | undefined> {
         return this.grows.find(grow => grow.id === id);
     }
+
+    async create(grow: Grow): Promise<Grow> {
+        this.grows.push(grow);
+        return grow;
+    }
 }

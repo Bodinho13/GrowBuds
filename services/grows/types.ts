@@ -21,6 +21,6 @@ export interface GrowRow {
 export interface GrowRepository {
     getAll(): Promise<Grow[]>;
     getById(id: string): Promise<Grow | undefined>;
-    //create(plant: Grow): Promise<Grow>;
-    //update(plant: Grow): Promise<Grow | undefined>;
+    create(grow: Grow): Promise<Grow>;
+    //update(grow: Grow): Promise<Grow | undefined>;
 };
