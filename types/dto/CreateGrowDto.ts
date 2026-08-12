@@ -9,5 +9,4 @@ export interface CreateGrowDto {
     stage: GrowStage;
     medium: GrowMedium;
     location?: string;
-    weight?: number;
 }

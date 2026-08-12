@@ -24,37 +24,33 @@ export class PlantRepository implements IPlantRepository {
 
     async create(plant: Plant): Promise<Plant> {
         const row = toPlantRow(plant);
-        await this.storage.execute(createPlantSql,
-            [
-                row.id,
-                row.name,
-                row.strain,
-                row.cross,
-                row.breeder,
-                row.notes,
-                row.createdAt,
-                row.updatedAt,
-                row.isArchived,
-            ]
-        );
+        await this.storage.execute(createPlantSql, [
+            row.id,
+            row.name,
+            row.strain,
+            row.cross,
+            row.breeder,
+            row.notes,
+            row.createdAt,
+            row.updatedAt,
+            row.isArchived,
+        ]);
         return plant;
     }
     
     async update(plant: Plant): Promise<Plant | undefined> {
         const row = toPlantRow(plant);
-        const changes = await this.storage.execute(updatePlantSql,
-            [
-                row.name,
-                row.strain,
-                row.cross,
-                row.breeder,
-                row.notes,
-                row.createdAt,
-                row.updatedAt,
-                row.isArchived,
-                row.id,
-            ]
-        );
+        const changes = await this.storage.execute(updatePlantSql, [
+            row.name,
+            row.strain,
+            row.cross,
+            row.breeder,
+            row.notes,
+            row.createdAt,
+            row.updatedAt,
+            row.isArchived,
+            row.id,
+        ]);
         return changes > 0 ? plant : undefined;
     } 
 }
