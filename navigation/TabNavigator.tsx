@@ -5,6 +5,7 @@ import CalendarScreen from "../screens/CalendarScreen";
 import TasksScreen from "../screens/TasksScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import PlantsStack from "./PlantsStack";
+import GrowsStack from "./GrowStack";
 
 import type { TabParamList } from "./types";
 
@@ -21,6 +22,12 @@ export default function TabNavigator() {
             <Tab.Screen 
                 name="Pflanzen"
                 component={PlantsStack}
+                options={{ headerShown: false }}
+            />
+
+            <Tab.Screen
+                name="Grows"
+                component={GrowsStack}
                 options={{ headerShown: false }}
             />
 
