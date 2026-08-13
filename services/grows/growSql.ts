@@ -13,7 +13,6 @@ export const createGrowSql = `
         plantId,
         name,
         startDate,
-        endDate,
         amount,
         stage,
         medium,
@@ -24,4 +23,16 @@ export const createGrowSql = `
         isArchived
     )
     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`;
+
+export const updateGrowSql = `
+    UPDATE grows
+        SET name = ?, amount = ?, stage = ?, medium = ?, location = ?, weight = ?, updatedAt = ?
+    WHERE id = ?
+`;
+
+export const archiveGrowSql = `
+    UPDATE grows
+    SET endDate = ?, isArchived = 1, updatedAt = ?
+    WHERE id = ?
 `;

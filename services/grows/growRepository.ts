@@ -1,8 +1,8 @@
 import { Grow } from "../../types/Grow";
 import { SQLiteStorage } from "../storage/sqliteStorage";
 
-import { createGrowSql, getAllGrowsSql, getGrowByIdSql } from "./growSql";
-import { toGrow } from "./mapper";
+import { archiveGrowSql, createGrowSql, getAllGrowsSql, getGrowByIdSql, updateGrowSql } from "./growSql";
+import { toGrow, toGrowRow } from "./mapper";
 import { GrowRow } from "./types";
 import type { GrowRepository as IGrowRepository } from "./types";
 
@@ -29,7 +29,6 @@ export class GrowRepository implements IGrowRepository{
             grow.plantId,
             grow.name,
             grow.startDate.toISOString(),
-            grow.endDate?.toISOString() ?? null,
             grow.amount,
             grow.stage,
             grow.medium,
@@ -40,7 +39,31 @@ export class GrowRepository implements IGrowRepository{
             grow.isArchived ? 1 : 0,
 
         ]);
-
         return grow;
+    }
+
+    async update(grow: Grow): Promise<Grow | undefined> {
+        const row = toGrowRow(grow);
+        const changes = await this.storage.execute(updateGrowSql, [
+            row.name,
+            row.amount,
+            row.stage,
+            row.medium,
+            row.location,
+            row.weight,
+            row.updatedAt,
+            row.id,
+        ]);
+
+        return changes > 0 ? grow : undefined;
+    }
+
+    async archive(grow: Grow): Promise<Grow | undefined> {
+        const changes = await this.storage.execute(archiveGrowSql, [
+            grow.endDate?.toISOString() ?? null,
+            grow.updatedAt.toISOString(),
+            grow.id,
+        ]);
+        return changes > 0 ? grow : undefined;
     }
 }

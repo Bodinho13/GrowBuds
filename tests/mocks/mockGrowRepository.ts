@@ -16,4 +16,20 @@ export class MockGrowRepository {
         this.grows.push(grow);
         return grow;
     }
+
+    async update(grow: Grow): Promise<Grow | undefined> {
+        const index = this.grows.findIndex(existing => existing.id === grow.id);
+        if(index === -1)
+            return undefined;
+        this.grows[index] = grow;
+        return grow;
+    }
+
+    async archive(grow: Grow): Promise<Grow | undefined> {
+        const index = this.grows.findIndex(existing => existing.id === grow.id);
+        if(index === -1)
+            return undefined;
+        this.grows[index] = grow;
+        return grow;
+    }
 }
