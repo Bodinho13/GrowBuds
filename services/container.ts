@@ -17,6 +17,6 @@ export async function createServices(){
 
     return {
         plantService,
-        growRepository,
+        growService,
     }
 }
