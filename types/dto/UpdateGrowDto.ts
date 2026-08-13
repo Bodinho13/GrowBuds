@@ -3,10 +3,8 @@ import { GrowStage } from "../GrowStage";
 
 export interface UpdateGrowDto {
     name?: string;
-    startDate?: Date;
-    endDate?: Date;
     amount?: number;
-    stage: GrowStage;
+    stage?: GrowStage;
     medium?: GrowMedium;
     location?: string;
     weight?: number;

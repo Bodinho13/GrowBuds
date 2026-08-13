@@ -1,4 +1,5 @@
 import { CreateGrowDto } from "../../types/dto/CreateGrowDto";
+import { UpdateGrowDto } from "../../types/dto/UpdateGrowDto";
 import type { Grow } from "../../types/Grow";
 import { createId } from "../../utils/id";
 
@@ -35,6 +36,36 @@ class GrowService {
         };
 
         return this.repository.create(grow);
+    }
+
+    async update(id: string, dto: UpdateGrowDto): Promise<Grow | undefined> {
+        const existingGrow = await this.repository.getById(id);
+        if(!existingGrow)
+            return undefined;
+
+        const updatedGrow: Grow = {
+            ...existingGrow,
+            ...dto,
+            updatedAt: new Date(),
+        };
+        return this.repository.update(updatedGrow);
+    }
+
+    async archive(id: string): Promise<Grow | undefined> {
+        const existingGrow = await this.repository.getById(id);
+        if(!existingGrow)
+            return undefined;
+
+        const now = new Date();
+
+        const archivedGrow: Grow = {
+            ...existingGrow,
+            endDate: now,
+            isArchived: true,
+            updatedAt: now,
+        };
+
+        return this.repository.archive(archivedGrow);
     }
 }
 

@@ -20,3 +20,21 @@ export function toGrow(row: GrowRow): Grow {
         isArchived: row.isArchived === 1,
     };
 }
+
+export function toGrowRow(grow: Grow): GrowRow {
+    return {
+        id: grow.id,
+        plantId: grow.plantId,
+        name: grow.name,
+        startDate: grow.startDate.toISOString(),
+        endDate: grow.endDate ? grow.endDate.toISOString() : null,
+        amount: grow.amount,
+        stage: grow.stage,
+        medium: grow.medium,
+        location: grow.location ?? null,
+        weight: grow.weight ?? null,
+        createdAt: grow.createdAt.toISOString(),
+        updatedAt: grow.updatedAt.toISOString(),
+        isArchived: grow.isArchived ? 1 : 0,
+    };
+}

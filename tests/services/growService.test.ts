@@ -1,5 +1,6 @@
 import GrowService from "../../services/grows";
 import { CreateGrowDto } from "../../types/dto/CreateGrowDto";
+import { Grow } from "../../types/Grow";
 import { GrowMedium } from "../../types/GrowMedium";
 import { GrowStage } from "../../types/GrowStage";
 import { MockGrowRepository } from "../mocks/mockGrowRepository";
@@ -56,5 +57,81 @@ describe("GrowService", () => {
         expect(grow.createdAt).toBeInstanceOf(Date);
         expect(grow.updatedAt).toBeInstanceOf(Date);
         expect(grow.isArchived).toBe(false);
+    });
+
+    it("updates a grow", async () => {
+        const grow: Grow = await growService.create({
+            plantId: "plant-001",
+            name: "Original Grow",
+            startDate: new Date("2026-04-01"),
+            amount: 1,
+            stage: GrowStage.Vegetative,
+            medium: GrowMedium.Soil,
+            location: "Grow Room",
+        });
+
+        const originalCreatedAt = grow.createdAt;
+        const originalStartDate = grow.startDate;
+        const originalEndDate = grow.endDate;
+        const originalPlantId = grow.plantId;
+
+        const updatedGrow = await growService.update(
+            grow.id,
+            {
+                name: "Updated Grow",
+                amount: 2,
+                location: "Another Room",
+            }
+        );
+
+        expect(updatedGrow).toBeDefined();
+
+        expect(updatedGrow?.id).toBe(grow.id);
+        expect(updatedGrow?.plantId).toBe(originalPlantId);
+        expect(updatedGrow?.startDate).toEqual(originalStartDate);
+        expect(updatedGrow?.endDate).toEqual(originalEndDate);
+        expect(updatedGrow?.createdAt).toEqual(originalCreatedAt);
+
+        expect(updatedGrow?.name).toBe("Updated Grow");
+        expect(updatedGrow?.amount).toBe(2);
+        expect(updatedGrow?.location).toBe("Another Room");
+        expect(updatedGrow?.updatedAt).toBeInstanceOf(Date);
+    });
+
+    it("returns undefined when updating a non-existing grow", async () => {
+        const result = await growService.update(
+            "does-not-exist",
+            {name: "Updated Grow",}
+        );
+        expect(result).toBeUndefined();
+    });
+
+    it("archives a grow", async () => {
+        const grow = await growService.create({
+            plantId: "plant-001",
+            name: "Grow to archive",
+            startDate: new Date("2026-04-01"),
+            amount: 1,
+            stage: GrowStage.Vegetative,
+            medium: GrowMedium.Soil,
+        });
+
+        const archivedGrow = await growService.archive(grow.id);
+
+        expect(archivedGrow).toBeDefined();
+        expect(archivedGrow?.id).toBe(grow.id);
+        expect(archivedGrow?.endDate).toBeInstanceOf(Date);
+        expect(archivedGrow?.isArchived).toBe(true);
+        expect(archivedGrow?.updatedAt).toBeInstanceOf(Date);
+
+        expect(archivedGrow?.name).toBe(grow.name);
+        expect(archivedGrow?.plantId).toBe(grow.plantId);
+        expect(archivedGrow?.startDate).toEqual(grow.startDate);
+        expect(archivedGrow?.createdAt).toEqual(grow.createdAt);
+    });
+
+    it("returns undefined when archiving a non-existing grow", async () => {
+        const result = await growService.archive("does-not-exist");
+        expect(result).toBeUndefined();
     });
 });
