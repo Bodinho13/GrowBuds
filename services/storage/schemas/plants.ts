@@ -9,5 +9,5 @@ export const createPlantsTableSql = `
         createdAt TEXT NOT NULL,
         updatedAt TEXT NOT NULL,
         isArchived INTEGER NOT NULL DEFAULT 0
-    )`
-;
+    );
+`;
