@@ -1,16 +1,24 @@
+import { useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { GrowStackParamList } from "../navigation/types";
 import { useGrows } from "../hooks/useGrows";
-import { Radius, Spacing, Typography } from "../theme";
+import { Spacing, Typography } from "../theme";
 import { LoadingView } from "../components/common";
 import GrowCard from "../components/GrowCard";
 
 type Props = NativeStackScreenProps<GrowStackParamList, "GrowsList">;
 
 export default function GrowsScreen({ navigation }: Props) {
-    const { grows, loading } = useGrows();
+    const { grows, loading, refresh } = useGrows();
+
+    useFocusEffect(
+        useCallback(() => {
+            refresh();
+        },[refresh])
+    );
 
     if(loading)
         return <LoadingView />
