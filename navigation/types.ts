@@ -16,8 +16,7 @@ export type PlantsStackParamList = {
 
 export type GrowStackParamList = {
     GrowsList: undefined;
-    GrowDetail: {
-        growId: string;
-    };
+    GrowDetail: {growId: string;};
     CreateGrow: undefined;
+    EditGrow: {growId:string;};
 };

@@ -5,6 +5,7 @@ import type { GrowStackParamList } from "./types";
 import GrowsScreen from "../screens/GrowsScreen";
 import GrowDetailScreen from "../screens/GrowDetailScreen";
 import CreateGrowScreen from "../screens/CreateGrowScreen";
+import EditGrowScreen from "../screens/EditGrowScreen";
 
 const Stack = createNativeStackNavigator<GrowStackParamList>();
 
@@ -27,6 +28,12 @@ export default function GrowsStack() {
                 name="CreateGrow"
                 component={CreateGrowScreen}
                 options={{ title: "Neuer Grow" }}
+            />
+
+            <Stack.Screen
+                name="EditGrow"
+                component={EditGrowScreen}
+                options={{ title: "Grow bearbeiten" }}
             />
         </Stack.Navigator>
     );
