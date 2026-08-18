@@ -1,5 +1,14 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+} from "react-native";
 import { useEffect, useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
@@ -37,8 +46,7 @@ export default function CreateGrowScreen({ navigation }: Props) {
   }, []);
 
   async function handleCreate() {
-    if (!selPlant || !name.trim()) 
-        return;
+    if (!selPlant || !name.trim()) return;
 
     const parsedAmount = Number(amount);
     if (
@@ -63,90 +71,112 @@ export default function CreateGrowScreen({ navigation }: Props) {
   }
 
   return (
-    <View style={styles.container}>
-      {selPlant ? (
-        <Select
+    <KeyboardAvoidingView
+      style={styles.keyboardAvoidingView}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        {selPlant ? (
+          <Select
             label="Pflanze"
             value={selPlant}
             options={plants}
             getLabel={(plant) => plant.name}
             onChange={setSelPlant}
-        />
-      ) : (
-        <Text>Keine Pflanzen vorhanden. Bitte zuerst eine Pflanze anlegen.</Text>
-      )}
-
-      <Text style={styles.label}>Name</Text>
-      <TextInput
-        value={name}
-        onChangeText={setName}
-        placeholder="Name des Grows"
-        style={styles.input}
-      />
-
-      <Text style={styles.label}>Menge</Text>
-      <TextInput
-        value={amount}
-        onChangeText={setAmount}
-        keyboardType="numeric"
-        placeholder="Anzahl"
-        style={styles.input}
-      />
-
-      <View style={styles.dateRow}>
-        <Text style={styles.label}>Startdatum</Text>
-        <View style={styles.dateRowValue}>
-          <DateTimePicker
-            value={startDate}
-            mode="date"
-            display="default"
-            onChange={(event, selectedDate) => {
-              if (selectedDate) setStartDate(selectedDate);
-            }}
           />
-          <Text>📆</Text>
+        ) : (
+          <Text>
+            Keine Pflanzen vorhanden. Bitte zuerst eine Pflanze anlegen.
+          </Text>
+        )}
+
+        <Text style={styles.label}>Name</Text>
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          placeholder="Name des Grows"
+          style={styles.input}
+        />
+
+        <Text style={styles.label}>Menge</Text>
+        <TextInput
+          value={amount}
+          onChangeText={setAmount}
+          keyboardType="numeric"
+          placeholder="Anzahl"
+          style={styles.input}
+        />
+
+        <View style={styles.dateRow}>
+          <Text style={styles.label}>Startdatum</Text>
+          <View style={styles.dateRowValue}>
+            <DateTimePicker
+              value={startDate}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => {
+                if (selectedDate) setStartDate(selectedDate);
+              }}
+            />
+            <Text>📆</Text>
+          </View>
         </View>
-      </View>
 
-      <Select
-        label="Grow-Phase"
-        value={stage}
-        options={Object.values(GrowStage)}
-        getLabel={(value) => value}
-        onChange={setStage}
-      />
+        <Select
+          label="Grow-Phase"
+          value={stage}
+          options={Object.values(GrowStage)}
+          getLabel={(value) => value}
+          onChange={setStage}
+        />
 
-      <Select
-        label="Medium"
-        value={medium}
-        options={Object.values(GrowMedium)}
-        getLabel={(value) => value}
-        onChange={setMedium}
-      />
+        <Select
+          label="Medium"
+          value={medium}
+          options={Object.values(GrowMedium)}
+          getLabel={(value) => value}
+          onChange={setMedium}
+        />
 
-      <Text style={styles.label}>Standort</Text>
-      <TextInput
-        value={location}
-        onChangeText={setLocation}
-        placeholder="optional"
-        style={styles.input}
-      />
+        <Text style={styles.label}>Standort</Text>
+        <TextInput
+          value={location}
+          onChangeText={setLocation}
+          placeholder="optional"
+          style={styles.input}
+        />
 
-      <Pressable style={[
+        <Pressable
+          style={[
             styles.button,
-            (!selPlant || !name.trim() || !Number.isInteger(Number(amount)) || Number(amount) <= 0) && styles.buttonDisabled
-        ]} onPress={handleCreate} 
-        disabled={
-            !selPlant || !name.trim() || !Number.isInteger(Number(amount)) || Number(amount) <= 0
-        }
-      >
-        <Text>Grow erstellen</Text>
-      </Pressable>
-    </View>
+            (!selPlant ||
+              !name.trim() ||
+              !Number.isInteger(Number(amount)) ||
+              Number(amount) <= 0) &&
+              styles.buttonDisabled,
+          ]}
+          onPress={handleCreate}
+          disabled={
+            !selPlant ||
+            !name.trim() ||
+            !Number.isInteger(Number(amount)) ||
+            Number(amount) <= 0
+          }
+        >
+          <Text>Grow erstellen</Text>
+        </Pressable>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     padding: Spacing.md,

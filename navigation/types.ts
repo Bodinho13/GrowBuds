@@ -12,6 +12,7 @@ export type PlantsStackParamList = {
     PlantDetail: {
         plantId: string;
     };
+    CreatePlant: undefined;
 };
 
 export type GrowStackParamList = {

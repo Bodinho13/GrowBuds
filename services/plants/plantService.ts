@@ -25,11 +25,7 @@ class PlantService {
 
         const plant: Plant = {
             id: createId(),
-            name: dto.name,
-            strain: dto.strain,
-            cross: dto.cross,
-            breeder: dto.breeder,
-            notes: dto.notes,
+            ...dto,
             createdAt: now,
             updatedAt: now,
             isArchived: false,

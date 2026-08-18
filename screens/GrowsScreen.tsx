@@ -5,7 +5,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { GrowStackParamList } from "../navigation/types";
 import { useGrows } from "../hooks/useGrows";
-import { Spacing, Typography } from "../theme";
+import { Colors, Spacing, Typography } from "../theme";
 import { LoadingView } from "../components/common";
 import GrowCard from "../components/GrowCard";
 import { useServices } from "../services/ServicesContext";
@@ -108,9 +108,15 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     sectionTitle: {
-
+        fontSize: Typography.title,
+        fontWeight: "bold",
+        color: Colors.text,
+        marginTop: Spacing.md,
+        marginBottom: Spacing.sm,
     },
     emptyText: {
-
+        fontSize: Typography.body,
+        color: Colors.textSecondary,
+        marginBottom: Spacing.md,
     },
 });
