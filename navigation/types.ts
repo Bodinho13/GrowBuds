@@ -12,11 +12,18 @@ export type PlantsStackParamList = {
     PlantDetail: {
         plantId: string;
     };
+    CreatePlant: undefined;
 };
 
 export type GrowStackParamList = {
     GrowsList: undefined;
-    GrowDetail: {growId: string;};
+    GrowDetail: {
+        growId: string;
+        plantName: string;
+    };
     CreateGrow: undefined;
-    EditGrow: {growId:string;};
+    EditGrow: {
+        growId:string;
+        plantName: string;
+    };
 };

@@ -1,18 +1,46 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, SectionList, StyleSheet, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { GrowStackParamList } from "../navigation/types";
 import { useGrows } from "../hooks/useGrows";
-import { Spacing, Typography } from "../theme";
+import { Colors, Spacing, Typography } from "../theme";
 import { LoadingView } from "../components/common";
 import GrowCard from "../components/GrowCard";
+import { useServices } from "../services/ServicesContext";
+import { createPlantNameLookup } from "../services/plants/plantLookup";
 
 type Props = NativeStackScreenProps<GrowStackParamList, "GrowsList">;
 
 export default function GrowsScreen({ navigation }: Props) {
+    const { plantService } = useServices();
     const { grows, loading, refresh } = useGrows();
+
+    const activeGrows = grows.filter((grow) => !grow.isArchived);
+    const archivedGrows = grows.filter((grow) => grow.isArchived);
+
+    const [plantNames, setPlantNames] = useState<Record<string, string>>({});
+
+    useEffect(() => {
+        async function loadPlantNames() {
+            const plants = await plantService.getAll();
+            setPlantNames(createPlantNameLookup(plants));
+        }
+
+        loadPlantNames();
+    }, [plantService]);
+
+    const sections = [
+        {
+            title: "Aktive Grows",
+            data: activeGrows,
+        },
+        {
+            title: "Archivierte Grows",
+            data: archivedGrows,
+        },
+    ];
 
     useFocusEffect(
         useCallback(() => {
@@ -25,17 +53,32 @@ export default function GrowsScreen({ navigation }: Props) {
     
     return (
         <View style={styles.container}>
-            <FlatList
-                data={grows}
+            <SectionList
+                sections={sections}
                 keyExtractor={(item) => item.id}
                 renderItem={({item}) => (
-                    <GrowCard
-                        grow={item}
-                        onPress={() =>
-                            navigation.navigate("GrowDetail", {growId: item.id})
-                        }
+                    <GrowCard grow={item}
+                        plantName={plantNames[item.plantId]}
+                        onPress={() => {
+                            navigation.navigate("GrowDetail", {
+                                growId: item.id,
+                                plantName: plantNames[item.plantId],
+                            })
+                        }}
                     />
                 )}
+                renderSectionHeader={({ section }) => (
+                    <Text style={styles.sectionTitle}>
+                        {section.title}
+                    </Text>
+                )}
+                renderSectionFooter={({section}) => 
+                    section.data.length === 0 ? (
+                        <Text style={styles.emptyText}>
+                            Keine {section.title.toLowerCase()} vorhanden.
+                        </Text>
+                    ) : null
+                }
             />
             <Pressable
                 style={styles.createButton}
@@ -63,5 +106,17 @@ const styles = StyleSheet.create({
     createButtonText: {
         fontSize: Typography.body,
         fontWeight: "bold",
+    },
+    sectionTitle: {
+        fontSize: Typography.title,
+        fontWeight: "bold",
+        color: Colors.text,
+        marginTop: Spacing.md,
+        marginBottom: Spacing.sm,
+    },
+    emptyText: {
+        fontSize: Typography.body,
+        color: Colors.textSecondary,
+        marginBottom: Spacing.md,
     },
 });

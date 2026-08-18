@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import PlantsScreen from "../screens/PlantsScreen";
 import type { PlantsStackParamList } from "./types";
 import PlantDetailScreen from "../screens/PlantDetailScreen";
+import CreatePlantScreen from "../screens/CreatePlantScreen";
 
 const Stack = createNativeStackNavigator<PlantsStackParamList>();
 
@@ -18,6 +19,11 @@ export default function PlantsStack() {
                 name="PlantDetail"
                 component={PlantDetailScreen}
                 options={{ title: "Meine Pflanze" }}
+            />
+            <Stack.Screen
+                name="CreatePlant"
+                component={CreatePlantScreen}
+                options={{ title: "Pflanze erstellen" }}
             />
         </Stack.Navigator>
     );
