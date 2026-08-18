@@ -10,16 +10,13 @@ import { GrowMedium } from "../types/GrowMedium";
 import { EmptyState, LoadingView } from "../components/common";
 import Select from "../components/common/Select";
 import { Radius, Spacing, Typography } from "../theme";
-import { usePlant } from "../hooks/usePlant";
 
 type Props = NativeStackScreenProps<GrowStackParamList, "EditGrow">;
 
 export default function EditGrowScreen({route, navigation}: Props) {
-    const {growId} = route.params;
+    const {growId, plantName} = route.params;
     const {grow, loading} = useGrow(growId);
     const {growService} = useServices();
-
-    const {plant} = usePlant(grow?.plantId);
 
     const [name, setName] = useState("");
     const [amount, setAmount] = useState("");
@@ -81,7 +78,7 @@ export default function EditGrowScreen({route, navigation}: Props) {
             />
 
             <Text style={styles.label}>Pflanze</Text>
-            <Text style={styles.input && styles.inputDisabled}>{plant?.name ?? "Pflanze wird geladen..."}</Text>
+            <Text style={styles.input && styles.inputDisabled}>{plantName ?? "Pflanze wird geladen..."}</Text>
 
             <Text style={styles.label}>Menge</Text>
             <TextInput

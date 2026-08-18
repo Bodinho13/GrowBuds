@@ -1,23 +1,30 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Grow } from "../types/Grow";
-import { useEffect } from "react";
-import PlantService from "../services/plants";
 import { usePlant } from "../hooks/usePlant";
 import { Colors, Radius, Spacing, Typography } from "../theme";
 
 type Props = {
     grow: Grow;
+    plantName?: string;
     onPress: () => void;
 };
 
-export default function GrowCard({ grow, onPress }: Props) {
-    const { plant } = usePlant(grow.plantId);
+export default function GrowCard({ grow, plantName, onPress }: Props) {
 
     return (
         <Pressable onPress={onPress}>
             <View style={styles.card}>
-                <Text style={styles.name}>{plant?.name}</Text>
-                <Text style={styles.name}>{grow.name}</Text>
+                <View style={styles.header}>
+                    <Text style={styles.name}>{grow.name}</Text>
+                    {grow.isArchived && (
+                        <View style={styles.archiveBadge}>
+                            <Text style={styles.archiveBadgeText}>Archiviert</Text>
+                        </View>
+                    )}
+                </View>
+                {plantName && (
+                    <Text style={styles.name}>{plantName}</Text>
+                )}
                 <Text style={styles.info}>Menge: {grow.amount}</Text>
                 <Text style={styles.info}>Phase: {grow.stage}</Text>
             </View>
@@ -52,5 +59,26 @@ const styles = StyleSheet.create({
     info: {
         marginTop: Spacing.xs,
         color: Colors.textSecondary,
+    },
+
+    archiveBadge: {
+        backgroundColor: Colors.archivedSurface,
+        borderWidth: 1,
+        borderColor: Colors.archivedBorder,
+        paddingHorizontal: Spacing.sm,
+        paddingVertical: Spacing.xs,
+        borderRadius: Radius.md,
+    },
+
+    archiveBadgeText: {
+        color: Colors.archivedText,
+        fontSize: Typography.caption,
+        fontWeight: "bold",
+    },
+
+    header: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
     },
 });
