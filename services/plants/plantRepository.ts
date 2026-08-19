@@ -48,6 +48,7 @@ export class PlantRepository implements IPlantRepository {
             row.notes,
             row.createdAt,
             row.updatedAt,
+            row.archivedAt,
             row.isArchived,
             row.id,
         ]);

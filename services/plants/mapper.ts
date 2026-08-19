@@ -11,6 +11,7 @@ export function toPlant(row: PlantRow): Plant {
         notes: row.notes ?? undefined,
         createdAt: new Date(row.createdAt),
         updatedAt: new Date(row.updatedAt),
+        archivedAt: row.archivedAt ? new Date(row.archivedAt) : undefined,
         isArchived: row.isArchived === 1,
     };
 }
@@ -25,6 +26,7 @@ export function toPlantRow(plant: Plant): PlantRow {
         notes: plant.notes ?? null,
         createdAt: plant.createdAt.toISOString(),
         updatedAt: plant.updatedAt.toISOString(),
+        archivedAt: plant.archivedAt?.toISOString() ?? null,
         isArchived: plant.isArchived ? 1 : 0,
     };
 }

@@ -7,5 +7,6 @@ export interface Plant {
     notes?: string;
     createdAt: Date;
     updatedAt: Date;
+    archivedAt?: Date;
     isArchived: boolean;
 }

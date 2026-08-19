@@ -52,10 +52,13 @@ class PlantService {
         if(!existingPlant)
             return undefined;
 
+        const now = new Date();
+
         const archivedPlant: Plant = {
             ...existingPlant,
             isArchived: true,
-            updatedAt: new Date()
+            archivedAt: now,
+            updatedAt: now,
         };
         return this.repository.update(archivedPlant);
     }
