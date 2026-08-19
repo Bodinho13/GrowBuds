@@ -21,7 +21,7 @@ export default function GrowsStack() {
             <Stack.Screen
                 name="GrowDetail"
                 component={GrowDetailScreen}
-                options={{ title: "Grow" }}
+                options={{ title: "Details" }}
             />
 
             <Stack.Screen
