@@ -52,6 +52,9 @@ class PlantService {
         if(!existingPlant)
             return undefined;
 
+        if(existingPlant.isArchived)
+            return undefined;
+
         const now = new Date();
 
         const archivedPlant: Plant = {
