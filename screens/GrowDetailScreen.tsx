@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, Pressable, Alert } from "react-native";
+import { View, Text, StyleSheet, Pressable, Alert, ScrollView } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { GrowStackParamList } from "../navigation/types";
 import { useGrow } from "../hooks/useGrow";
 import { usePlant } from "../hooks/usePlant";
-import { EmptyState, LoadingView } from "../components/common";
+import { EmptyState, LoadingView, Section } from "../components/common";
 import { Colors, Radius, Spacing, Typography } from "../theme";
 import { useServices } from "../services/ServicesContext";
 import { Grow } from "../types/Grow";
@@ -26,7 +26,7 @@ export default function GrowDetailScreen({route, navigation}: Props) {
     async function handleArchive(grow: Grow){
         Alert.alert(
             "Grow archivieren",
-            `Möchtest du "${grow?.name} - ${plantName}" wirklich archivieren?`,
+            `Möchtest du "${grow.name} - ${plantName}" wirklich archivieren?`,
             [{
                 text: "Abbrechen",
                 style: "cancel",
@@ -53,8 +53,11 @@ export default function GrowDetailScreen({route, navigation}: Props) {
     }
 
     return(
-        <View style={styles.container}>
-            <Text style={styles.title}>{grow.name}</Text>
+        <ScrollView contentContainerStyle={styles.container}>
+            <View style={styles.header}>
+                <Text style={styles.title}>{grow.name}</Text>
+                <Text style={styles.plantName}>{plantName}</Text>
+            </View>
 
             {grow.isArchived && (
                 <View style={styles.archivedInfo}>
@@ -62,66 +65,138 @@ export default function GrowDetailScreen({route, navigation}: Props) {
                         Grow archiviert
                     </Text>
                     {grow.endDate && (
-                        <Text style={{color: Colors.archivedTextSecondary}}>
+                        <Text style={styles.archivedInfoText}>
                             Enddatum: {" "}{grow.endDate.toLocaleDateString("de-DE")}
                         </Text>
                     )}
                 </View>
             )}
 
-            <Text>Pflanze: {plantName}</Text>
-            <Text>
-                Startdatum:{" "}
-                {grow.startDate.toLocaleDateString("de-DE")}
-            </Text>
+            <Section title="Allgemein">
+                <View style={styles.infoRow}>
+                    <Text style={styles.label}>Startdatum</Text>
+                    <Text style={styles.value}>{grow.startDate.toLocaleDateString("de-DE")}</Text>
+                </View>
 
-            <Text>Menge: {grow.amount}</Text>
-            <Text>Phase: {grow.stage}</Text>
-            <Text>Medium: {grow.medium}</Text>
-            {grow.location && (
-                <Text>Standort: {grow.location}</Text>
-            )}
-            {grow.weight !== undefined && (
-                <Text>Gewicht: {grow.weight}</Text>
+                <View style={styles.infoRow}>
+                    <Text style={styles.label}>Menge</Text>
+                    <Text style={styles.value}>{grow.amount}</Text>
+                </View>
+            </Section>
+
+            <Section title="Anbau">
+                <View style={styles.infoRow}>
+                    <Text style={styles.label}>Phase</Text>
+                    <Text style={styles.value}>{grow.stage}</Text>
+                </View>
+
+                <View style={styles.infoRow}>
+                    <Text style={styles.label}>Medium</Text>
+                    <Text style={styles.value}>{grow.medium}</Text>
+                </View>
+
+                {grow.location && (
+                    <View style={styles.infoRow}>
+                        <Text style={styles.label}>Standort</Text>
+                        <Text style={styles.value}>{grow.location}</Text>
+                    </View>
+                )}
+            </Section>
+
+            {(grow.weight !== undefined) && (
+                <Section title="Ergebnis">
+                    <View style={styles.infoRow}>
+                        <Text style={styles.label}>Gewicht</Text>
+                        <Text style={styles.value}>{grow.weight}</Text>
+                    </View>
+                </Section>
             )}
 
-            <Pressable
-                style={styles.button}
-                onPress={() => navigation.navigate("EditGrow", {growId: grow.id, plantName: plantName})}
-            >
-                <Text style={styles.buttonText}>Bearbeiten</Text>
-            </Pressable>
-            {!grow.isArchived && (
+            <Section title="Verwaltung">
+                <View style={styles.infoRow}>
+                  <Text style={styles.label}>Erstellt am</Text>
+                  <Text style={styles.value}>{grow.createdAt.toLocaleDateString("de-DE")}</Text>
+                </View>
+            
+                <View style={styles.infoRow}>
+                  <Text style={styles.label}>Zuletzt geändert</Text>
+                  <Text style={styles.value}>{grow.updatedAt.toLocaleDateString("de-DE")}</Text>
+                </View>
+            </Section>
+
+            <View style={styles.actions}>
                 <Pressable
-                    style={[styles.button, styles.archiveButton]}
-                    onPress={() => handleArchive(grow)}
+                    style={styles.button}
+                    onPress={() => navigation.navigate("EditGrow", {growId: grow.id, plantName: plantName})}
                 >
-                    <Text style={[styles.buttonText, styles.archiveButtonText]}>Archivieren</Text>
+                    <Text style={styles.buttonText}>Bearbeiten</Text>
                 </Pressable>
-            )}
-        </View>
+                {!grow.isArchived && (
+                    <Pressable
+                        style={[styles.button, styles.archiveButton]}
+                        onPress={() => handleArchive(grow)}
+                    >
+                        <Text style={[styles.buttonText, styles.archiveButtonText]}>Archivieren</Text>
+                    </Pressable>
+                )}
+            </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         padding: Spacing.md,
+        paddingBottom: Spacing.xl,
+        backgroundColor: Colors.background,
+    },
+    header: {
+        alignItems: "center",
+        marginBottom: Spacing.lg,
     },
     title: {
         fontSize: Typography.title,
         fontWeight: "bold",
-        marginBottom: Spacing.md,
+        color: Colors.text,
+    },
+    plantName: {
+        fontSize: Typography.body,
+        color: Colors.textSecondary,
+        marginTop: Spacing.xs,
+    },
+    infoRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+        paddingVertical: Spacing.xs,
+    },
+    label: {
+        fontSize: Typography.body,
+        color: Colors.textSecondary,
+        flex: 1,
+    },
+    value: {
+        fontSize: Typography.body,
+        color: Colors.text,
+        fontWeight: "500",
+        textAlign: "right",
+        flex: 1,
+    },
+    actions: {
+        marginTop: Spacing.sm,
     },
     button: {
         padding: Spacing.md,
         borderRadius: Spacing.sm,
         alignItems: "center",
-        marginTop: Spacing.md
+        marginTop: Spacing.md,
+        backgroundColor: Colors.primary,
     },
     buttonText: {
         fontSize: Typography.body,
         fontWeight: "bold",
+        color: Colors.surface,
     },
     archiveButton: {
         backgroundColor: Colors.error,
@@ -142,5 +217,9 @@ const styles = StyleSheet.create({
         fontSize: Typography.body,
         fontWeight: "bold",
         marginBottom: Spacing.xs,
+    },
+    archivedInfoText: {
+        color: Colors.archivedTextSecondary,
+        fontSize: Typography.body,
     },
 });
