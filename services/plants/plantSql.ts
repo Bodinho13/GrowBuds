@@ -24,6 +24,6 @@ export const createPlantSql = `
 
 export const updatePlantSql = `
     UPDATE plants 
-        SET name = ?, strain = ?, cross = ?, breeder = ?, notes = ?, createdAt = ?, updatedAt = ?, isArchived = ?
+        SET name = ?, strain = ?, cross = ?, breeder = ?, notes = ?, createdAt = ?, updatedAt = ?, archivedAt = ?, isArchived = ?
     WHERE id = ?
 `;

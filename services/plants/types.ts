@@ -11,6 +11,7 @@ export type PlantRow = {
     notes: string | null;
     createdAt: string;
     updatedAt: string;
+    archivedAt: string | null;
     isArchived: number;
 };
 
