@@ -17,7 +17,7 @@ import { GrowStage } from "../types/GrowStage";
 import { GrowMedium } from "../types/GrowMedium";
 import { EmptyState, LoadingView } from "../components/common";
 import Select from "../components/common/Select";
-import { Radius, Spacing, Typography } from "../theme";
+import { Colors, Radius, Spacing, Typography } from "../theme";
 
 type Props = NativeStackScreenProps<GrowStackParamList, "EditGrow">;
 
@@ -88,7 +88,7 @@ export default function EditGrowScreen({ route, navigation }: Props) {
         <TextInput value={name} onChangeText={setName} style={styles.input} />
 
         <Text style={styles.label}>Pflanze</Text>
-        <Text style={styles.input && styles.inputDisabled}>
+        <Text style={[styles.input, styles.inputDisabled]}>
           {plantName ?? "Pflanze wird geladen..."}
         </Text>
 
@@ -147,28 +147,37 @@ export const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: Spacing.md,
+    paddingBottom: Spacing.xl,
+    backgroundColor: Colors.background,
+  },
+  label: {
+    fontSize: Typography.body,
+    fontWeight: "bold",
+    marginBottom: Spacing.xs,
+    color: Colors.text,
   },
   input: {
     borderWidth: 1,
+    borderColor: Colors.border,
     borderRadius: Radius.md,
-    padding: Spacing.sm,
+    backgroundColor: Colors.surface,
+    padding: Spacing.md,
+    fontSize: Typography.body,
+    marginBottom: Spacing.md,
+    color: Colors.text,
   },
   inputDisabled: {
     opacity: 0.5,
   },
-  label: {
-    fontWeight: "bold",
-    marginTop: Spacing.sm,
-    marginBottom: Spacing.sm,
-  },
   button: {
+    backgroundColor: Colors.primary,
     padding: Spacing.md,
-    borderWidth: 1,
     borderRadius: Radius.md,
     alignItems: "center",
-    marginTop: Spacing.lg,
+    marginTop: Spacing.md,
   },
   buttonText: {
+    color: Colors.surface,
     fontSize: Typography.body,
     fontWeight: "bold",
   },

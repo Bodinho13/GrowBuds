@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useServices } from "../services/ServicesContext";
 import {
   Alert,
-  View,
   Text,
   TextInput,
   Pressable,
@@ -68,7 +67,7 @@ export default function CreatePlantScreen({ navigation }: Props) {
           placeholder="Name der Pflanze"
         />
 
-        <Text style={styles.label}>Sorte</Text>
+        <Text style={styles.label}>Typ</Text>
         <TextInput
           style={styles.input}
           value={strain}
@@ -107,7 +106,7 @@ export default function CreatePlantScreen({ navigation }: Props) {
           disabled={saving}
         >
           <Text style={styles.buttonText}>
-            {saving ? "Speichern" : "Pflanzen erstellen"}
+            {saving ? "Speichern..." : "Pflanzen erstellen"}
           </Text>
         </Pressable>
       </ScrollView>

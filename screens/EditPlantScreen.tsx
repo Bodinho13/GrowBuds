@@ -92,7 +92,7 @@ export default function EditPlantScreen ({route, navigation}: Props) {
                     style={styles.input}
                     value={strain}
                     onChangeText={setStrain}
-                    placeholder="Sativa / Indica"
+                    placeholder="z.B. Indica"
                 />
 
                 <Text style={styles.label}>Kreuzung</Text>

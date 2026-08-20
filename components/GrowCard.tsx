@@ -1,6 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Grow } from "../types/Grow";
-import { usePlant } from "../hooks/usePlant";
 import { Colors, Radius, Spacing, Typography } from "../theme";
 
 type Props = {
@@ -23,7 +22,7 @@ export default function GrowCard({ grow, plantName, onPress }: Props) {
                     )}
                 </View>
                 {plantName && (
-                    <Text style={styles.name}>{plantName}</Text>
+                    <Text style={styles.plantName}>{plantName}</Text>
                 )}
                 <Text style={styles.info}>Menge: {grow.amount}</Text>
                 <Text style={styles.info}>Phase: {grow.stage}</Text>
@@ -51,6 +50,11 @@ const styles = StyleSheet.create({
     name: {
         fontSize: Typography.subHeading,
         fontWeight: "bold",
+        marginBottom: Spacing.xs,
+    },
+    plantName: {
+        fontSize: Typography.body,
+        color: Colors.textSecondary,
         marginBottom: Spacing.xs,
     },
     info: {
