@@ -1,10 +1,6 @@
-import * as SQLite from "expo-sqlite";
-
 import { PlantRepository } from "../../services/plants/plantRepository";
 import { Plant } from "../../types/Plant";
-import { createTablesSql } from "../../services/storage/databaseSchema";
 import { SQLiteStorage } from "../../services/storage/sqliteStorage";
-import { migrateDatabase } from "../../services/storage/migrations";
 import { mockPlants } from "../../constants/mockData";
 import { updatePlantSql } from "../../services/plants/plantSql";
 

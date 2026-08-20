@@ -134,4 +134,19 @@ describe("GrowService", () => {
         const result = await growService.archive("does-not-exist");
         expect(result).toBeUndefined();
     });
+
+    it("returns undefined when archiving an archived grow", async () => {
+        const grow = await growService.create({
+            plantId: "plant_001",
+            name: "test grow",
+            startDate: new Date(),
+            amount: 1,
+            stage: GrowStage.Cutling,
+            medium: GrowMedium.Soil,
+        });
+        await growService.archive(grow.id);
+        const result = await growService.archive(grow.id);
+
+        expect(result).toBeUndefined();
+    });
 });
