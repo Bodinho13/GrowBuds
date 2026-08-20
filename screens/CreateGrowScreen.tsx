@@ -17,7 +17,7 @@ import { useServices } from "../services/ServicesContext";
 import { Plant } from "../types/Plant";
 import { GrowStage } from "../types/GrowStage";
 import { GrowMedium } from "../types/GrowMedium";
-import { Radius, Spacing } from "../theme";
+import { Colors, Radius, Spacing, Typography } from "../theme";
 import Select from "../components/common/Select";
 
 type Props = NativeStackScreenProps<GrowStackParamList, "CreateGrow">;
@@ -43,7 +43,7 @@ export default function CreateGrowScreen({ navigation }: Props) {
       }
     }
     loadPlants();
-  }, []);
+  }, [plantService]);
 
   async function handleCreate() {
     if (!selPlant || !name.trim()) return;
@@ -166,7 +166,7 @@ export default function CreateGrowScreen({ navigation }: Props) {
             Number(amount) <= 0
           }
         >
-          <Text>Grow erstellen</Text>
+          <Text style={styles.buttonText}>Grow erstellen</Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -180,35 +180,24 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: Spacing.md,
+    paddingBottom: Spacing.xl,
+    backgroundColor: Colors.background,
   },
   label: {
+    fontSize: Typography.body,
     fontWeight: "bold",
-    marginTop: Spacing.sm,
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.xs,
+    color: Colors.text,
   },
   input: {
     borderWidth: 1,
+    borderColor: Colors.border,
     borderRadius: Radius.md,
-    padding: Spacing.sm,
-  },
-  option: {
-    padding: Spacing.sm,
-    borderWidth: 1,
-    borderRadius: Radius.md,
-    marginBottom: Spacing.xs,
-  },
-  selectedOption: {
-    borderWidth: 2,
-  },
-  button: {
+    backgroundColor: Colors.surface,
     padding: Spacing.md,
-    borderWidth: 1,
-    borderRadius: Radius.md,
-    alignItems: "center",
-    marginTop: Spacing.lg,
-  },
-  buttonDisabled: {
-    opacity: 0.5,
+    fontSize: Typography.body,
+    marginBottom: Spacing.md,
+    color: Colors.text,
   },
   dateRow: {
     flexDirection: "row",
@@ -220,5 +209,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
+  },
+  button: {
+    backgroundColor: Colors.primary,
+    padding: Spacing.md,
+    borderRadius: Radius.md,
+    alignItems: "center",
+    marginTop: Spacing.lg,
+  },
+  buttonDisabled: {
+    opacity: 0.5,
+  },
+  buttonText: {
+    color: Colors.surface,
+    fontSize: Typography.body,
+    fontWeight: "bold",
+  },
+  inputDisabled: {
+    opacity: 0.5,
   },
 });

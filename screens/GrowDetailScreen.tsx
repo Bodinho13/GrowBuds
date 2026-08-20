@@ -3,7 +3,6 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { GrowStackParamList } from "../navigation/types";
 import { useGrow } from "../hooks/useGrow";
-import { usePlant } from "../hooks/usePlant";
 import { EmptyState, LoadingView, Section } from "../components/common";
 import { Colors, Radius, Spacing, Typography } from "../theme";
 import { useServices } from "../services/ServicesContext";
@@ -103,7 +102,7 @@ export default function GrowDetailScreen({route, navigation}: Props) {
                 )}
             </Section>
 
-            {(grow.weight !== undefined) && (
+            {grow.weight !== undefined && (
                 <Section title="Ergebnis">
                     <View style={styles.infoRow}>
                         <Text style={styles.label}>Gewicht</Text>

@@ -5,7 +5,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { GrowStackParamList } from "../navigation/types";
 import { useGrows } from "../hooks/useGrows";
-import { Colors, Spacing, Typography } from "../theme";
+import { Colors, Radius, Spacing, Typography } from "../theme";
 import { LoadingView } from "../components/common";
 import GrowCard from "../components/GrowCard";
 import { useServices } from "../services/ServicesContext";
@@ -96,20 +96,23 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: Spacing.md,
+        backgroundColor: Colors.background,
     },
     createButton: {
+        backgroundColor: Colors.primary,
         padding: Spacing.md,
-        borderRadius: Spacing.sm,
+        borderRadius: Radius.md,
         alignItems: "center",
         marginTop: Spacing.md
     },
     createButtonText: {
+        color: Colors.surface,
         fontSize: Typography.body,
         fontWeight: "bold",
     },
     sectionTitle: {
-        fontSize: Typography.title,
-        fontWeight: "bold",
+        fontSize: Typography.heading,
+        fontWeight: "600",
         color: Colors.text,
         marginTop: Spacing.md,
         marginBottom: Spacing.sm,

@@ -74,16 +74,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: Spacing.md,
+    backgroundColor: Colors.background,
   },
   listContent: {
     paddingTop: Spacing.sm,
     paddingBottom: Spacing.md,
   },
   sectionTitle: {
-    fontSize: Typography.title,
-    fontWeight: "bold",
+    fontSize: Typography.heading,
+    fontWeight: "600",
     color: Colors.text,
-    marginHorizontal: Spacing.md,
     marginTop: Spacing.md,
     marginBottom: Spacing.xs,
   },
