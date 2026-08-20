@@ -1,6 +1,6 @@
 import { GrowRepository } from "../../services/grows/growRepository";
+import { updateGrowSql } from "../../services/grows/growSql";
 import { SQLiteStorage } from "../../services/storage/sqliteStorage";
-import { CreateGrowDto } from "../../types/dto/CreateGrowDto";
 
 import { Grow } from "../../types/Grow";
 import { GrowMedium } from "../../types/GrowMedium";
@@ -85,5 +85,17 @@ describe("GrowRepository", () => {
 
         expect(result).toEqual(grow);
         expect(execute).toHaveBeenCalledTimes(1);
+        expect(execute).toHaveBeenCalledWith(updateGrowSql, [
+            grow.name,
+            grow.amount,
+            grow.stage,
+            grow.medium,
+            null,
+            null,
+            grow.endDate?.toISOString(),
+            grow.updatedAt.toISOString(),
+            1,
+            grow.id,
+        ]);
     });
 });

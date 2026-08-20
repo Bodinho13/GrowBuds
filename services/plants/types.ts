@@ -1,7 +1,5 @@
 import { Plant } from "../../types/Plant";
 
-//export type PlantId = string;
-
 export type PlantRow = {
     id: string;
     name: string;
