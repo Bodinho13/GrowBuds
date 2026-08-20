@@ -23,5 +23,4 @@ export interface GrowRepository {
     getById(id: string): Promise<Grow | undefined>;
     create(grow: Grow): Promise<Grow>;
     update(grow: Grow): Promise<Grow | undefined>;
-    archive(grow: Grow): Promise<Grow | undefined>;
 };

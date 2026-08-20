@@ -5,7 +5,6 @@ import { Plant } from "../../types/Plant";
 import { createId } from "../../utils/id";
 
 import type { PlantRepository } from "./types";
-import { PlantId } from "./types";
 
 class PlantService {
     constructor(
@@ -34,7 +33,7 @@ class PlantService {
         return this.repository.create(plant);
     }
 
-    async update(id: PlantId, dto: UpdatePlantDto): Promise<Plant | undefined> {
+    async update(id: string, dto: UpdatePlantDto): Promise<Plant | undefined> {
         const existingPlant = await this.repository.getById(id);
         if(!existingPlant)
             return undefined;

@@ -22,13 +22,7 @@ class GrowService {
         const now = new Date();
         const grow: Grow = {
             id: createId(),
-            plantId: dto.plantId,
-            name: dto.name,
-            startDate: dto.startDate,
-            amount: dto.amount,
-            stage: dto.stage,
-            medium: dto.medium,
-            location: dto.location,
+            ...dto,
             weight: undefined,
             createdAt: now,
             updatedAt: now,
@@ -56,6 +50,9 @@ class GrowService {
         if(!existingGrow)
             return undefined;
 
+        if(existingGrow.isArchived)
+            return undefined;
+
         const now = new Date();
 
         const archivedGrow: Grow = {
@@ -65,7 +62,7 @@ class GrowService {
             updatedAt: now,
         };
 
-        return this.repository.archive(archivedGrow);
+        return this.repository.update(archivedGrow);
     }
 }
 
