@@ -1,6 +1,8 @@
 import PlantService from "../../services/plants";
 import { MockPlantRepository } from "../mocks/mockPlantRepository";
 import type { CreatePlantDto } from "../../types/dto/CreatePlantDto";
+import { Plant } from "../../types/Plant";
+import { mockPlants } from "../../constants/mockData";
 
 describe("PlantService", () => {
     let repository: MockPlantRepository;
@@ -69,17 +71,53 @@ describe("PlantService", () => {
     });
 
     it("archives a plant", async () => {
-        const plant = await plantService.create({name: "Plant to archive"});
+        const oldUpdatedAt = new Date("2026-01-01");
+        const plant: Plant = {
+            ...mockPlants[0],
+            isArchived: false,
+            archivedAt: undefined,
+            updatedAt: oldUpdatedAt,
+        };
+
+        repository.getById = jest.fn().mockResolvedValue(plant);
+        repository.update = jest.fn().mockImplementation(
+            async (updatedPlant: Plant) => updatedPlant
+        );
+
         const archivedPlant = await plantService.archive(plant.id);
 
         expect(archivedPlant).toBeDefined();
         expect(archivedPlant?.id).toBe(plant.id);
         expect(archivedPlant?.isArchived).toBe(true);
-        expect(archivedPlant?.updatedAt).toBeInstanceOf(Date);
+        expect(archivedPlant?.archivedAt).toBeInstanceOf(Date);
+        expect(archivedPlant?.updatedAt).not.toBe(oldUpdatedAt);
+
+        expect(repository.update).toHaveBeenCalledTimes(1);
     });
 
     it("returns undefined when archiving a non-existing plant", async () => {
+        repository.getById = jest.fn().mockResolvedValue(undefined);
+        repository.update = jest.fn();
+
         const result = await plantService.archive("does-not-exist");
+        
         expect(result).toBeUndefined();
+        expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    it("returns undefined when archiving a archived plant", async () => {
+        const plant: Plant = {
+            ...mockPlants[0],
+            isArchived: true,
+            archivedAt: new Date("2026-08-19"),
+        };
+
+        repository.getById = jest.fn().mockResolvedValue(plant);
+        repository.update = jest.fn();
+        
+        const result = await plantService.archive(plant.id);
+
+        expect(result).toBeUndefined();
+        expect(repository.update).not.toHaveBeenCalled();
     });
 });
