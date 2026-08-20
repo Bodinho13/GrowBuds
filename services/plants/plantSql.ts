@@ -17,9 +17,10 @@ export const createPlantSql = `
         notes,
         createdAt,
         updatedAt,
+        archivedAt,
         isArchived
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `;
 
 export const updatePlantSql = `

@@ -81,7 +81,7 @@ describe("GrowRepository", () => {
             isArchived: true,
         };
 
-        const result = await repository.archive(grow);
+        const result = await repository.update(grow);
 
         expect(result).toEqual(grow);
         expect(execute).toHaveBeenCalledTimes(1);

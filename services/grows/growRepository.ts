@@ -1,7 +1,7 @@
 import { Grow } from "../../types/Grow";
 import { SQLiteStorage } from "../storage/sqliteStorage";
 
-import { archiveGrowSql, createGrowSql, getAllGrowsSql, getGrowByIdSql, updateGrowSql } from "./growSql";
+import { createGrowSql, getAllGrowsSql, getGrowByIdSql, updateGrowSql } from "./growSql";
 import { toGrow, toGrowRow } from "./mapper";
 import { GrowRow } from "./types";
 import type { GrowRepository as IGrowRepository } from "./types";
@@ -24,19 +24,20 @@ export class GrowRepository implements IGrowRepository{
     }
 
     async create(grow: Grow): Promise<Grow> {
+        const row = toGrowRow(grow);
         await this.storage.execute(createGrowSql, [
-            grow.id,
-            grow.plantId,
-            grow.name,
-            grow.startDate.toISOString(),
-            grow.amount,
-            grow.stage,
-            grow.medium,
-            grow.location ?? null,
-            grow.weight ?? null,
-            grow.createdAt.toISOString(),
-            grow.updatedAt.toISOString(),
-            grow.isArchived ? 1 : 0,
+            row.id,
+            row.plantId,
+            row.name,
+            row.startDate,
+            row.amount,
+            row.stage,
+            row.medium,
+            row.location,
+            row.weight,
+            row.createdAt,
+            row.updatedAt,
+            row.isArchived,
 
         ]);
         return grow;
@@ -51,19 +52,12 @@ export class GrowRepository implements IGrowRepository{
             row.medium,
             row.location,
             row.weight,
+            row.endDate,
             row.updatedAt,
+            row.isArchived,
             row.id,
         ]);
 
-        return changes > 0 ? grow : undefined;
-    }
-
-    async archive(grow: Grow): Promise<Grow | undefined> {
-        const changes = await this.storage.execute(archiveGrowSql, [
-            grow.endDate?.toISOString() ?? null,
-            grow.updatedAt.toISOString(),
-            grow.id,
-        ]);
         return changes > 0 ? grow : undefined;
     }
 }

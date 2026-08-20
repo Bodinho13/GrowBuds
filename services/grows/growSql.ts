@@ -27,12 +27,6 @@ export const createGrowSql = `
 
 export const updateGrowSql = `
     UPDATE grows
-        SET name = ?, amount = ?, stage = ?, medium = ?, location = ?, weight = ?, updatedAt = ?
-    WHERE id = ?
-`;
-
-export const archiveGrowSql = `
-    UPDATE grows
-    SET endDate = ?, isArchived = 1, updatedAt = ?
+        SET name = ?, amount = ?, stage = ?, medium = ?, location = ?, weight = ?, endDate = ?, updatedAt = ?, isArchived = ?
     WHERE id = ?
 `;
