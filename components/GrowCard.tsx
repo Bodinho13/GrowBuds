@@ -46,21 +46,17 @@ const styles = StyleSheet.create({
             width: 0,
             height: 2,
         },
-
         elevation: 2,
     },
-
     name: {
         fontSize: Typography.subHeading,
         fontWeight: "bold",
         marginBottom: Spacing.xs,
     },
-
     info: {
         marginTop: Spacing.xs,
         color: Colors.textSecondary,
     },
-
     archiveBadge: {
         backgroundColor: Colors.archivedSurface,
         borderWidth: 1,
@@ -69,13 +65,11 @@ const styles = StyleSheet.create({
         paddingVertical: Spacing.xs,
         borderRadius: Radius.md,
     },
-
     archiveBadgeText: {
         color: Colors.archivedText,
         fontSize: Typography.caption,
         fontWeight: "bold",
     },
-
     header: {
         flexDirection: "row",
         alignItems: "center",

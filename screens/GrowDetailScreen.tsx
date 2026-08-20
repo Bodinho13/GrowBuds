@@ -62,7 +62,7 @@ export default function GrowDetailScreen({route, navigation}: Props) {
             {grow.isArchived && (
                 <View style={styles.archivedInfo}>
                     <Text style={styles.archivedInfoTitle}>
-                        Grow archiviert
+                        Archiviert
                     </Text>
                     {grow.endDate && (
                         <Text style={styles.archivedInfoText}>
