@@ -8,6 +8,7 @@ export const createPlantsTableSql = `
         notes TEXT,
         createdAt TEXT NOT NULL,
         updatedAt TEXT NOT NULL,
+        archivedAt TEXT,
         isArchived INTEGER NOT NULL DEFAULT 0
     );
 `;
