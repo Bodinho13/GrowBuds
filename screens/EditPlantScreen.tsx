@@ -100,7 +100,7 @@ export default function EditPlantScreen ({route, navigation}: Props) {
                     style={styles.input}
                     value={cross}
                     onChangeText={setCross}
-                    placeholder="z.B A x B"
+                    placeholder="z.B. A x B"
                 />
 
                 <Text style={styles.label}>Züchter</Text>
