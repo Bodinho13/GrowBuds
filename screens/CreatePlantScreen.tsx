@@ -106,7 +106,7 @@ export default function CreatePlantScreen({ navigation }: Props) {
           disabled={saving}
         >
           <Text style={styles.buttonText}>
-            {saving ? "Speichern..." : "Pflanzen erstellen"}
+            {saving ? "Speichern..." : "Pflanze erstellen"}
           </Text>
         </Pressable>
       </ScrollView>
