@@ -75,7 +75,7 @@ export default function GrowsScreen({ navigation }: Props) {
                 renderSectionFooter={({section}) => 
                     section.data.length === 0 ? (
                         <Text style={styles.emptyText}>
-                            Keine {section.title.toLowerCase()} vorhanden.
+                            Keine {section.title} vorhanden.
                         </Text>
                     ) : null
                 }
