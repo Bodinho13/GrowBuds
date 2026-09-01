@@ -139,11 +139,13 @@ describe("GrowsScreen", () => {
         });
         renderGrowsScreen();
 
-        expect(screen.getByText("Menge: 4")).toBeTruthy();
-        expect(screen.getByText("Phase: Vegetative Phase")).toBeTruthy();
+        await waitFor(() => {
+            expect(screen.getByText("Menge: 4")).toBeTruthy();
+            expect(screen.getByText("Phase: Vegetative Phase")).toBeTruthy();
+        });
     });
 
-    it("shows empty messages for empty sections", () => {
+    it("shows empty messages for empty sections", async () => {
         mockedUseGrows.mockReturnValue({
             grows: [],
             loading: false,
@@ -151,8 +153,10 @@ describe("GrowsScreen", () => {
         });
         renderGrowsScreen();
 
-        expect(screen.getByText("Keine Aktive Grows vorhanden.")).toBeTruthy();
-        expect(screen.getByText("Keine Archivierte Grows vorhanden.")).toBeTruthy();
+        await waitFor(() => {
+            expect(screen.getByText("Keine Aktive Grows vorhanden.")).toBeTruthy();
+            expect(screen.getByText("Keine Archivierte Grows vorhanden.")).toBeTruthy();
+        });
     });
 
     it("navigates to the grow detail screen when a grow is pressed", async () => {
@@ -178,12 +182,16 @@ describe("GrowsScreen", () => {
         );
     });
 
-    it("navigates to create grow when the create button is pressed", () => {
+    it("navigates to create grow when the create button is pressed", async () => {
         renderGrowsScreen();
+
+        await waitFor(() => {
+            expect(screen.getByText("+ Neuer Grow")).toBeTruthy();
+        });
 
         fireEvent.press(screen.getByText("+ Neuer Grow"));
 
-        expect(mockNavigation.navigate).toHaveBeenCalledWith("CreateGrow",);
+        expect(mockNavigation.navigate).toHaveBeenCalledWith("CreateGrow");
     });
 
     it("refreshes the grows when the screen gets focused", async () => {

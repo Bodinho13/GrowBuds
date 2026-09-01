@@ -1,4 +1,4 @@
-import { act, renderHook } from "@testing-library/react-native";
+import { act, renderHook, waitFor } from "@testing-library/react-native";
 import { useServices } from "../../services/ServicesContext";
 import { usePlant } from "../../hooks/usePlant";
 
@@ -29,9 +29,11 @@ describe("usePlant", () => {
     it("loads a plant by id", async () => {
         mockGetById.mockResolvedValue(plant);
 
-        const {result} = await renderHook(() => usePlant("plant-001"));
+        const {result} = renderHook(() => usePlant("plant-001"));
 
-        expect(result.current.loading).toBe(false);
+        await waitFor(() => {
+            expect(result.current.loading).toBe(false);
+        });
         expect(result.current.plant).toEqual(plant);
         expect(mockGetById).toHaveBeenCalledTimes(1);
         expect(mockGetById).toHaveBeenCalledWith("plant-001");
@@ -40,9 +42,11 @@ describe("usePlant", () => {
     it("return null for an unknown plant", async () => {
         mockGetById.mockResolvedValue(undefined);
 
-        const {result} = await renderHook(() => usePlant("does-not-exist"));
+        const {result} = renderHook(() => usePlant("does-not-exist"));
 
-        expect(result.current.loading).toBe(false);
+        await waitFor(() => {
+            expect(result.current.loading).toBe(false);
+        });
         expect(result.current.plant).toBeNull();
         expect(mockGetById).toHaveBeenCalledWith("does-not-exist");
     });
@@ -50,9 +54,11 @@ describe("usePlant", () => {
     it("refreshes the plant", async () => {
         mockGetById.mockResolvedValue(plant);
 
-        const {result} = await renderHook(() => usePlant("plant-001"));
+        const {result} = renderHook(() => usePlant("plant-001"));
 
-        expect(result.current.plant).toEqual(plant);
+        await waitFor(() => {
+            expect(result.current.plant).toEqual(plant);
+        });
         expect(mockGetById).toHaveBeenCalledTimes(1);
 
         await act(async () => {
@@ -65,9 +71,11 @@ describe("usePlant", () => {
     });
     
     it("returns null when no plant id is provided", async () => {
-        const {result} = await renderHook(() => usePlant());
+        const {result} = renderHook(() => usePlant());
 
-        expect(result.current.plant).toBeNull();
+        await waitFor(() => {
+            expect(result.current.plant).toBeNull();
+        });
         expect(mockGetById).not.toHaveBeenCalled();
     });
 });

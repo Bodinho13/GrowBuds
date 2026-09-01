@@ -1,4 +1,4 @@
-import { act, renderHook } from "@testing-library/react-native";
+import { act, renderHook, waitFor } from "@testing-library/react-native";
 import { useServices } from "../../services/ServicesContext";
 import { useGrow } from "../../hooks/useGrow";
 
@@ -33,9 +33,11 @@ describe("useGrow", () => {
     it("loads a grow by id", async () => {
         mockGetById.mockResolvedValue(grow);
 
-        const {result} = await renderHook(() => useGrow("grow-001"));
+        const {result} = renderHook(() => useGrow("grow-001"));
 
-        expect(result.current.loading).toBe(false);
+        await waitFor(() => {
+            expect(result.current.loading).toBe(false);
+        });
         expect(result.current.grow).toEqual(grow);
         expect(mockGetById).toHaveBeenCalledTimes(1);
         expect(mockGetById).toHaveBeenCalledWith("grow-001");
@@ -44,9 +46,11 @@ describe("useGrow", () => {
     it("returns null for an unknown grow", async () => {
         mockGetById.mockResolvedValue(undefined);
 
-        const {result} = await renderHook(() => useGrow("does-not-exist"));
+        const {result} = renderHook(() => useGrow("does-not-exist"));
 
-        expect(result.current.loading).toBe(false);
+        await waitFor(() => {
+            expect(result.current.loading).toBe(false);
+        });
         expect(result.current.grow).toBeNull();
         expect(mockGetById).toHaveBeenCalledWith("does-not-exist");
     });
@@ -54,9 +58,11 @@ describe("useGrow", () => {
     it("refreshes ten grow", async () => {
         mockGetById.mockResolvedValue(grow);
 
-        const {result} = await renderHook(() => useGrow("grow-001"));
+        const {result} = renderHook(() => useGrow("grow-001"));
 
-        expect(mockGetById).toHaveBeenCalledTimes(1);
+        await waitFor(() => {
+            expect(mockGetById).toHaveBeenCalledTimes(1);
+        });
 
         await act (async () => {
             await result.current.refresh();

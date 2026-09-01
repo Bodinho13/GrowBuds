@@ -1,4 +1,4 @@
-import { renderHook, act } from "@testing-library/react-native";
+import { renderHook, act, waitFor } from "@testing-library/react-native";
 
 import { usePlants } from "../../hooks/usePlants";
 import { useServices } from "../../services/ServicesContext";
@@ -30,9 +30,11 @@ describe("usePlants", () => {
 
     it("loads plants", async () => {
         mockGetAll.mockResolvedValue(plants);
-        const {result} = await renderHook(() => usePlants());
+        const {result} = renderHook(() => usePlants());
 
-        expect(result.current.loading).toBe(false);
+        await waitFor(() => {
+            expect(result.current.loading).toBe(false);
+        });
         expect(result.current.plants).toEqual(plants);
         expect(mockGetAll).toHaveBeenCalledTimes(1);
     });
@@ -40,9 +42,11 @@ describe("usePlants", () => {
     it("refreshes plants", async () => {
         mockGetAll.mockResolvedValue(plants);
 
-        const {result} = await renderHook(() => usePlants());
+        const {result} = renderHook(() => usePlants());
 
-        expect(result.current.loading).toBe(false);
+        await waitFor(() => {
+            expect(result.current.loading).toBe(false);
+        });
         expect(mockGetAll).toHaveBeenCalledTimes(1);
 
         await act (async () => {
