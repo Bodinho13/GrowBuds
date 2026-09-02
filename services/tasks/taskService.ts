@@ -1,18 +1,19 @@
 import type { Task } from "../../types/Task";
-
-//import { mockPlants } from "../../constants/mockData";
+import { TaskRepository } from "./types";
 
 class TaskService {
+    constructor(
+        private readonly repository: TaskRepository
+    ) {}
     
-    async getTasks(): Promise<Task[]> {
-        return [];
+    async getAll(): Promise<Task[]> {
+        return this.repository.getAll();
     }
 
-    async getTask(id: string): Promise<Task | undefined> {
-        //return mockPlants.find(plant => plant.id === id);
-        return undefined;
+    async getById(id: string): Promise<Task | undefined> {
+        return this.repository.getById(id);
     }
 
 }
 
-export default new TaskService();
+export default TaskService;
