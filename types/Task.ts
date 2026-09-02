@@ -9,6 +9,6 @@ export interface Task {
     completed: boolean;
     createdAt: Date;
     updatedAt: Date;
-    archivedAt: Date | undefined;
+    archivedAt?: Date;
     isArchived: boolean;
 }
