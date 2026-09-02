@@ -1,16 +1,23 @@
-import { NavigationContainer } from "@react-navigation/native";
 import { useGrows } from "../../hooks/useGrows";
 import { useServices } from "../../services/ServicesContext";
 import { GrowMedium } from "../../types/GrowMedium";
 import { GrowStage } from "../../types/GrowStage";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
+import {
+    fireEvent,
+    render,
+    screen,
+    waitFor,
+} from "@testing-library/react-native";
 import GrowsScreen from "../../screens/GrowsScreen";
+import { NavigationContainer } from "@react-navigation/native";
 
 jest.mock("../../hooks/useGrows");
 jest.mock("../../services/ServicesContext");
 
 const mockedUseGrows = jest.mocked(useGrows);
 const mockedUseServices = jest.mocked(useServices);
+const mockGetAllPlants = jest.fn();
+const mockPlantService = {getAll: mockGetAllPlants};
 const mockNavigation = {
     navigate: jest.fn(),
     goBack: jest.fn(),
@@ -43,28 +50,28 @@ const archivedGrow = {
     updatedAt: new Date("2026-08-24"),
     isArchived: true,
 };
-const plants = [{
-    id: "plant-001",
-    name: "Northern Lights",
-    createdAt: new Date("2026-08-01"),
-    updatedAt: new Date("2025-08-19"),
-    isArchived: false,
-}, {
-    id: "plant-002",
-    name: "Blue Dream",
-    createdAt: new Date("2026-08-01"),
-    updatedAt: new Date("2026-08-19"),
-    isArchived: false,
-},];
+const plants = [
+    {
+        id: "plant-001",
+        name: "Northern Lights",
+        createdAt: new Date("2026-08-01"),
+        updatedAt: new Date("2025-08-19"),
+        isArchived: false,
+    },
+    {
+        id: "plant-002",
+        name: "Blue Dream",
+        createdAt: new Date("2026-08-01"),
+        updatedAt: new Date("2026-08-19"),
+        isArchived: false,
+    },
+];
 
 function renderGrowsScreen() {
     return render(
         <NavigationContainer>
-            <GrowsScreen
-                navigation={mockNavigation}
-                route={mockRoute}
-            />
-        </NavigationContainer>,
+            <GrowsScreen navigation={mockNavigation} route={mockRoute} />,
+        </NavigationContainer>
     );
 }
 
@@ -72,10 +79,10 @@ describe("GrowsScreen", () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
+        mockGetAllPlants.mockResolvedValue(plants);
+
         mockedUseServices.mockReturnValue({
-            plantService: {
-                getAll: jest.fn().mockResolvedValue(plants),
-            },
+            plantService: mockPlantService,
         } as any);
 
         mockedUseGrows.mockReturnValue({
@@ -102,7 +109,7 @@ describe("GrowsScreen", () => {
 
     it("shows active and archived grows in separate sections", async () => {
         mockedUseGrows.mockReturnValue({
-            grows:[activeGrow, archivedGrow],
+            grows: [activeGrow, archivedGrow],
             loading: false,
             refresh: jest.fn(),
         });
@@ -124,7 +131,7 @@ describe("GrowsScreen", () => {
             refresh: jest.fn(),
         });
         renderGrowsScreen();
-        
+
         await waitFor(() => {
             expect(screen.getByText("Northern Lights")).toBeTruthy();
             expect(screen.getByText("Blue Dream")).toBeTruthy();
@@ -154,8 +161,12 @@ describe("GrowsScreen", () => {
         renderGrowsScreen();
 
         await waitFor(() => {
-            expect(screen.getByText("Keine Aktive Grows vorhanden.")).toBeTruthy();
-            expect(screen.getByText("Keine Archivierte Grows vorhanden.")).toBeTruthy();
+            expect(
+                screen.getByText("Keine Aktive Grows vorhanden."),
+            ).toBeTruthy();
+            expect(
+                screen.getByText("Keine Archivierte Grows vorhanden."),
+            ).toBeTruthy();
         });
     });
 
@@ -173,13 +184,10 @@ describe("GrowsScreen", () => {
 
         fireEvent.press(screen.getByText("Sommer Grow"));
 
-        expect(mockNavigation.navigate).toHaveBeenCalledWith(
-            "GrowDetail",
-            {
-                growId: "grow-001",
-                plantName: "Northern Lights",
-            },
-        );
+        expect(mockNavigation.navigate).toHaveBeenCalledWith("GrowDetail", {
+            growId: "grow-001",
+            plantName: "Northern Lights",
+        });
     });
 
     it("navigates to create grow when the create button is pressed", async () => {
