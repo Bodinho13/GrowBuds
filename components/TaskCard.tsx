@@ -28,7 +28,7 @@ export default function TaskCard({task, growName, onPress}: Props) {
                     <Text style={styles.cardText}>{growName}</Text>
                 )}
                 <Text style={styles.cardText}>
-                    Fällig: {task.dueDate.toLocaleDateString()}
+                    Fällig: {task.dueDate.toLocaleDateString("de-De")}
                 </Text>
                 <Text style={styles.cardText}>
                     Dringlichkeit: {task.urgency}
