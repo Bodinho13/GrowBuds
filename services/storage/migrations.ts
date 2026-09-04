@@ -25,4 +25,17 @@ export async function migrateDatabase(db: SQLiteDatabase) {
         `);
         currentVersion = 2;
     }
+
+    if(currentVersion < 3) {
+        await db.execAsync(`
+           ALTER TABLE grows
+           ADD COLUMN growGroupId TEXT; 
+        `);
+
+        await db.execAsync(`
+           PRAGMA user_version = 3; 
+        `);
+
+        currentVersion = 3;
+    }
 }
