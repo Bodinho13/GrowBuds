@@ -3,15 +3,30 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import type { TabParamList } from "../navigation/types";
 import { useTasks } from "../hooks/useTasks";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { EmptyState, LoadingView } from "../components/common";
 import { Colors, Radius, Spacing, Typography } from "../theme";
+import { useServices } from "../services/ServicesContext";
+import { createGrowNameLookup } from "../services/grows/growLookUp";
+import TaskCard from "../components/TaskCard";
 
 type Props = BottomTabScreenProps<TabParamList, "Aufgaben">;
 
 export default function TasksScreen({}: Props) {
+    const {growService} = useServices();
     const {tasks, loading, refresh} = useTasks();
+
+    const [growNames, setGrowNames] = useState<Record<string, string>>({});
+
+    useEffect(() => {
+        async function loadGrowNames() {
+            const grows = await growService.getAll();
+            setGrowNames(createGrowNameLookup(grows));
+        }
+
+        loadGrowNames();
+    }, [growService]);
 
     useFocusEffect(
         useCallback(() => {
@@ -37,17 +52,10 @@ export default function TasksScreen({}: Props) {
                     data={tasks}
                     keyExtractor={(item) => item.id}
                     renderItem={({item}) => (
-                        <View style={styles.task}>
-                            <Text style={styles.taskTitle}>
-                                {item.title}
-                            </Text>
-                            <Text style={styles.taskText}>
-                                Fällig: {item.dueDate.toLocaleDateString()}
-                            </Text>
-                            <Text style={styles.taskText}>
-                                Priorität: {item.urgency}
-                            </Text>
-                        </View>
+                        <TaskCard
+                            task={item}
+                            growName={growNames[item.growId]}
+                        />
                     )}
                 />
             )}
@@ -66,21 +74,5 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: Colors.text,
         marginBottom: Spacing.md,
-    },
-    task: {
-        padding: Spacing.md,
-        marginBottom: Spacing.sm,
-        backgroundColor: Colors.surface,
-        borderRadius: Radius.md,
-    },
-    taskTitle: {
-        fontSize: Typography.body,
-        fontWeight: "600",
-        color: Colors.text,
-    },
-    taskText: {
-        fontSize: Typography.body,
-        color: Colors.textSecondary,
-        marginTop: Spacing.sm,
     },
 });
