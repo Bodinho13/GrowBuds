@@ -28,6 +28,7 @@ export class GrowRepository implements IGrowRepository{
         await this.storage.execute(createGrowSql, [
             row.id,
             row.plantId,
+            row.growGroupId,
             row.name,
             row.startDate,
             row.amount,
@@ -46,6 +47,7 @@ export class GrowRepository implements IGrowRepository{
     async update(grow: Grow): Promise<Grow | undefined> {
         const row = toGrowRow(grow);
         const changes = await this.storage.execute(updateGrowSql, [
+            row.growGroupId,
             row.name,
             row.amount,
             row.stage,

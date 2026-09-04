@@ -2,6 +2,7 @@ export const createGrowsTableSql = `
     CREATE TABLE IF NOT EXISTS grows (
         id TEXT PRIMARY KEY NOT NULL,
         plantId TEXT NOT NULL,
+        growGroupId TEXT,
         name TEXT NOT NULL,
         startDate TEXT NOT NULL,
         endDate TEXT,
@@ -15,5 +16,6 @@ export const createGrowsTableSql = `
         isArchived INTEGER NOT NULL DEFAULT 0,
         
         FOREIGN KEY (plantId) REFERENCES plants(id)
+        FOREIGN KEY (growGroupId) REFERENCES grow_groups(id)
     );
 `;
