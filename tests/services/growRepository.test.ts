@@ -70,6 +70,7 @@ describe("GrowRepository", () => {
         const grow: Grow = {
             id: "grow-archive-001",
             plantId: "plant-001",
+            growGroupId: undefined,
             name: "Archived Grow",
             startDate,
             endDate,
@@ -86,6 +87,7 @@ describe("GrowRepository", () => {
         expect(result).toEqual(grow);
         expect(execute).toHaveBeenCalledTimes(1);
         expect(execute).toHaveBeenCalledWith(updateGrowSql, [
+            null,
             grow.name,
             grow.amount,
             grow.stage,

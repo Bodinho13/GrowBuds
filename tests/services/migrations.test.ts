@@ -11,7 +11,7 @@ describe("migrateDatabase", () => {
         } as unknown as jest.Mocked<SQLiteDatabase>;
     });
 
-    it("migrates a new database to version 2", async () => {
+    it("migrates a new database to version 3", async () => {
         db.getFirstAsync.mockResolvedValue({ user_version: 0 });
         await migrateDatabase(db);
 
@@ -36,15 +36,23 @@ describe("migrateDatabase", () => {
             3,
             expect.stringContaining("PRAGMA user_version = 2"),
         );
+        expect(db.execAsync).toHaveBeenNthCalledWith(
+            4,
+            expect.stringContaining("ADD COLUMN growGroupId TEXT;"),
+        );
+        expect(db.execAsync).toHaveBeenNthCalledWith(
+            5,
+            expect.stringContaining("PRAGMA user_version = 3"),
+        );
     });
 
-    it("migrates a version 1 database to version 2", async () => {
+    it("migrates a version 1 database to version 3", async () => {
         db.getFirstAsync.mockResolvedValue({
             user_version: 1,
         });
         await migrateDatabase(db);
 
-        expect(db.execAsync).toHaveBeenCalledTimes(2);
+        expect(db.execAsync).toHaveBeenCalledTimes(4);
         expect(db.execAsync).toHaveBeenNthCalledWith(
             1,
             expect.stringContaining("ALTER TABLE plants")
@@ -57,11 +65,19 @@ describe("migrateDatabase", () => {
             2,
             expect.stringContaining("PRAGMA user_version = 2")
         );
+        expect(db.execAsync).toHaveBeenNthCalledWith(
+            3,
+            expect.stringContaining("ADD COLUMN growGroupId TEXT;"),
+        );
+        expect(db.execAsync).toHaveBeenNthCalledWith(
+            4,
+            expect.stringContaining("PRAGMA user_version = 3"),
+        );
     });
 
-    it("does nothing when database is already at version 2", async () => {
+    it("does nothing when database is already at version 3", async () => {
         db.getFirstAsync.mockResolvedValue({
-            user_version: 2,
+            user_version: 3,
         });
         await migrateDatabase(db);
 
@@ -72,6 +88,6 @@ describe("migrateDatabase", () => {
         db.getFirstAsync.mockResolvedValue(null);
         await migrateDatabase(db);
 
-        expect(db.execAsync).toHaveBeenCalledTimes(3);
+        expect(db.execAsync).toHaveBeenCalledTimes(5);
     });
 });
