@@ -7,6 +7,7 @@ export function toGrow(row: GrowRow): Grow {
     return {
         id: row.id,
         plantId: row.plantId,
+        growGroupId: row.growGroupId ?? undefined,
         name: row.name,
         startDate: new Date(row.startDate),
         endDate: row.endDate ? new Date(row.endDate) : undefined,
@@ -25,6 +26,7 @@ export function toGrowRow(grow: Grow): GrowRow {
     return {
         id: grow.id,
         plantId: grow.plantId,
+        growGroupId: grow.growGroupId ?? null,
         name: grow.name,
         startDate: grow.startDate.toISOString(),
         endDate: grow.endDate ? grow.endDate.toISOString() : null,

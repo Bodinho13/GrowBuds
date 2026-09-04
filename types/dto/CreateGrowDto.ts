@@ -3,6 +3,7 @@ import { GrowStage } from "../GrowStage";
 
 export interface CreateGrowDto {
     plantId: string;
+    growGroupId?: string;
     name: string;
     startDate: Date;
     amount: number;

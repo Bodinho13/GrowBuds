@@ -4,6 +4,7 @@ import { GrowMedium } from "./GrowMedium";
 export interface Grow {
     id: string;
     plantId: string;
+    growGroupId?: string;
     name: string;
     startDate: Date;
     endDate?: Date;

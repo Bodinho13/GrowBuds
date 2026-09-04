@@ -54,7 +54,7 @@ export default function TasksScreen({}: Props) {
                     renderItem={({item}) => (
                         <TaskCard
                             task={item}
-                            growName={growNames[item.growId]}
+                            growName={item.growId ? growNames[item.growId] : undefined}
                         />
                     )}
                 />

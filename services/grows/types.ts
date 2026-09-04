@@ -5,6 +5,7 @@ export type GrowId = string;
 export interface GrowRow {
     id: string;
     plantId: string;
+    growGroupId: string | null;
     name: string;
     startDate: string;
     endDate: string | null;

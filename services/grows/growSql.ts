@@ -11,6 +11,7 @@ export const createGrowSql = `
     INSERT INTO grows (
         id,
         plantId,
+        growGroupId,
         name,
         startDate,
         amount,
@@ -22,11 +23,11 @@ export const createGrowSql = `
         updatedAt,
         isArchived
     )
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `;
 
 export const updateGrowSql = `
     UPDATE grows
-        SET name = ?, amount = ?, stage = ?, medium = ?, location = ?, weight = ?, endDate = ?, updatedAt = ?, isArchived = ?
+        SET growGroupId = ?, name = ?, amount = ?, stage = ?, medium = ?, location = ?, weight = ?, endDate = ?, updatedAt = ?, isArchived = ?
     WHERE id = ?
 `;
