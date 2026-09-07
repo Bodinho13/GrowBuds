@@ -40,6 +40,7 @@ export class GrowGroupRepository implements IGrowGroupRepository {
             row.updatedAt,
             row.archivedAt,
             row.isArchived,
+            row.id,
         ]);
 
         return growGroup;
