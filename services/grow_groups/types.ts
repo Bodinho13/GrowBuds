@@ -5,7 +5,7 @@ export interface GrowGroupRow {
     name: string;
     createdAt: string;
     updatedAt: string;
-    archivedAt: string;
+    archivedAt: string | null;
     isArchived: number;
 }
 

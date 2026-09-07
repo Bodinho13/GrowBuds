@@ -4,6 +4,6 @@ export interface GrowGroup {
     name: string;
     createdAt: Date;
     updatedAt: Date;
-    archivedAt: Date;
+    archivedAt?: Date;
     isArchived: boolean;
 }

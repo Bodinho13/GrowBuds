@@ -7,7 +7,7 @@ export function toGrowGroup(row: GrowGroupRow): GrowGroup {
         name: row.name,
         createdAt: new Date(row.createdAt),
         updatedAt: new Date(row.updatedAt),
-        archivedAt: new Date(row.archivedAt),
+        archivedAt: row.archivedAt ? new Date(row.archivedAt) : undefined,
         isArchived: row.isArchived === 1,
     };
 }
@@ -18,7 +18,7 @@ export function toGrowGroupRow(gg: GrowGroup): GrowGroupRow {
         name: gg.name,
         createdAt: gg.createdAt.toISOString(),
         updatedAt: gg.updatedAt.toISOString(),
-        archivedAt: gg.archivedAt.toISOString(),
+        archivedAt: gg.archivedAt ? gg.archivedAt.toISOString() : null,
         isArchived: gg.isArchived ? 1 : 0,
     };
 }
