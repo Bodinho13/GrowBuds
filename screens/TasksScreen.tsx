@@ -1,17 +1,17 @@
-import { View, Text, StyleSheet, FlatList } from "react-native";
-
-import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import type { TabParamList } from "../navigation/types";
-import { useTasks } from "../hooks/useTasks";
 import { useCallback, useEffect, useState } from "react";
+import { View, Text, StyleSheet, FlatList } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useFocusEffect } from "@react-navigation/native";
+
+import type { TaskStackParamList } from "../navigation/types";
+import { useTasks } from "../hooks/useTasks";
 import { EmptyState, LoadingView } from "../components/common";
-import { Colors, Radius, Spacing, Typography } from "../theme";
+import { Colors, Spacing, Typography } from "../theme";
 import { useServices } from "../services/ServicesContext";
 import { createGrowNameLookup } from "../services/grows/growLookUp";
 import TaskCard from "../components/TaskCard";
 
-type Props = BottomTabScreenProps<TabParamList, "Aufgaben">;
+type Props = NativeStackScreenProps<TaskStackParamList, "TasksList">;
 
 export default function TasksScreen({}: Props) {
     const {growService} = useServices();

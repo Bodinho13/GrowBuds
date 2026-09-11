@@ -30,3 +30,11 @@ export type GrowStackParamList = {
         plantName: string;
     };
 };
+
+export type TaskStackParamList = {
+    TasksList: undefined;
+    TaskDetail: {
+        taskId: string;
+        relatedName: string;
+    };
+}
