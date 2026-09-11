@@ -44,6 +44,17 @@ describe("useTasks", () => {
         expect(mockGetAll).toHaveBeenCalledTimes(1);
     });
 
+    it("sets loading to false after loading tasks", async () => {
+        mockGetAll.mockResolvedValue([]);
+
+        const {result} = renderHook(() => useTasks());
+        
+        await waitFor(() => {
+            expect(result.current.loading).toBe(false);
+        });
+        expect(result.current.tasks).toEqual([]);
+    });
+
     it("refreshes tasks", async () => {
         mockGetAll.mockResolvedValue(tasks);
 

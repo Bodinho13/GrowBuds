@@ -47,6 +47,22 @@ class TaskService {
 
         return this.repository.update(updatedTask);
     }
+
+    async archive(id: string): Promise<Task | undefined> {
+        const existingTask = await this.repository.getById(id);
+        if(!existingTask || existingTask.isArchived)
+            return undefined;
+
+        const now = new Date();
+        const archivedTask: Task = {
+            ...existingTask,
+            isArchived: true,
+            archivedAt: now,
+            updatedAt: now,
+        };
+
+        return this.repository.update(archivedTask);
+    }
     
     private validateTarget(growId?: string, growGroupId?: string): void {
         if(growId && growGroupId)

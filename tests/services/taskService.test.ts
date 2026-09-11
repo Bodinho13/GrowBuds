@@ -1,4 +1,3 @@
-import { SQLiteStorage } from "../../services/storage/sqliteStorage";
 import TaskService from "../../services/tasks";
 import type { TaskRepository } from "../../services/tasks/types";
 import { CreateTaskDto } from "../../types/dto/CreateTaskDto";
@@ -114,7 +113,7 @@ describe("TaskService", () => {
         expect(repository.create).toHaveBeenCalledWith(result);
     });
 
-    it("throws when a taks has both a grow and a grow group", async () => {
+    it("throws when a task has both a grow and a grow group", async () => {
         const dto: CreateTaskDto = {
             growId: "grow-001",
             growGroupId: "group-001",
@@ -147,6 +146,7 @@ describe("TaskService", () => {
         repository.update.mockImplementation(async (updatedTask) => updatedTask);
 
         const result = await taskService.update("task-001", {
+            ...task,
             title: "Düngen",
             completed: true,
         });
@@ -169,6 +169,55 @@ describe("TaskService", () => {
 
         expect(result).toBeUndefined();
         expect(repository.getById).toHaveBeenCalledWith("does-not-exist");
+        expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    it("archives an existing active task", async () => {
+        repository.getById.mockResolvedValue(task);
+        repository.update.mockImplementation(async (updatedTask) => updatedTask);
+
+        const result = await taskService.archive("task-001");
+
+        expect(result).toBeDefined();
+        expect(result?.id).toBe(task.id);
+        expect(result?.isArchived).toBe(true);
+        expect(result?.archivedAt).toBeInstanceOf(Date);
+        expect(result?.updatedAt).toBeInstanceOf(Date);
+        expect(result?.updatedAt).not.toEqual(task.updatedAt);
+        expect(repository.getById).toHaveBeenCalledWith("task-001");
+        expect(repository.update).toHaveBeenCalledTimes(1);
+        expect(repository.update).toHaveBeenCalledWith(
+            expect.objectContaining({
+                id: task.id,
+                isArchived: true,
+                archivedAt: expect.any(Date),
+            })
+        );
+    });
+
+    it("returns undefined when archiving a non-existing task", async () => {
+        repository.getById.mockResolvedValue(undefined);
+
+        const result = await taskService.archive("does-not-exist");
+        
+        expect(result).toBeUndefined();
+        expect(repository.getById).toHaveBeenCalledWith("does-not-exist");
+        expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    it("returns undefined when the task is already archived", async () => {
+        const archivedTask: Task = {
+            ...task,
+            isArchived: true,
+            archivedAt: new Date("2026-09-03"),
+        };
+
+        repository.getById.mockResolvedValue(archivedTask);
+
+        const result = await taskService.archive("task-001");
+
+        expect(result).toBeUndefined();
+        expect(repository.getById).toHaveBeenCalledWith("task-001");
         expect(repository.update).not.toHaveBeenCalled();
     });
 });
