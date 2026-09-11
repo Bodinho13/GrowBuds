@@ -28,7 +28,8 @@ describe("TaskService", () => {
             getAll: jest.fn(),
             getById: jest.fn(),
             create: jest.fn(),
-        };
+            update: jest.fn(),
+        } as unknown as jest.Mocked<TaskRepository>;
 
         taskService = new TaskService(repository);
     });
@@ -139,5 +140,35 @@ describe("TaskService", () => {
             "A task must belong to either a grow or grow group."
         );
         expect(repository.create).not.toHaveBeenCalled();
+    });
+
+    it("updates a task", async () => {
+        repository.getById.mockResolvedValue(task);
+        repository.update.mockImplementation(async (updatedTask) => updatedTask);
+
+        const result = await taskService.update("task-001", {
+            title: "Düngen",
+            completed: true,
+        });
+
+        expect(result).toBeDefined();
+        expect(result?.id).toBe(task.id);
+        expect(result?.createdAt).toEqual(task.createdAt);
+        expect(result?.title).toBe("Düngen");
+        expect(result?.completed).toBe(true);
+        expect(result?.updatedAt).toBeInstanceOf(Date);
+        expect(result?.updatedAt).not.toEqual(task.updatedAt);
+        expect(repository.getById).toHaveBeenCalledWith("task-001");
+        expect(repository.update).toHaveBeenCalledTimes(1);
+    });
+
+    it("returns undefined when updating a non-existing task", async () => {
+        repository.getById.mockResolvedValue(undefined);
+
+        const result = await taskService.update("does-not-exist", {title: "Düngen"});
+
+        expect(result).toBeUndefined();
+        expect(repository.getById).toHaveBeenCalledWith("does-not-exist");
+        expect(repository.update).not.toHaveBeenCalled();
     });
 });

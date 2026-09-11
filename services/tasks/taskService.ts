@@ -1,4 +1,5 @@
 import { CreateTaskDto } from "../../types/dto/CreateTaskDto";
+import { UpdateTaskDto } from "../../types/dto/UpdateTaskDto";
 import type { Task } from "../../types/Task";
 import { createId } from "../../utils/id";
 import { TaskRepository } from "./types";
@@ -29,6 +30,22 @@ class TaskService {
         };
 
         return this.repository.create(task);
+    }
+
+    async update(id: string, dto: UpdateTaskDto): Promise<Task | undefined> {
+        const existingTask = await this.repository.getById(id);
+        if(!existingTask)
+            return undefined;
+
+        this.validateTarget(dto.growId, dto.growGroupId);
+
+        const updatedTask: Task = {
+            ...existingTask,
+            ...dto,
+            updatedAt: new Date(),
+        };
+
+        return this.repository.update(updatedTask);
     }
     
     private validateTarget(growId?: string, growGroupId?: string): void {
