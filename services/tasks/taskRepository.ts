@@ -1,7 +1,7 @@
 import { Task } from "../../types/Task";
 import { SQLiteStorage } from "../storage/sqliteStorage";
-import { toTask } from "./mapper";
-import { getAllTasksSql, getTaskByIdSql } from "./taskSql";
+import { toTask, toTaskRow } from "./mapper";
+import { createTaskSql, getAllTasksSql, getTaskByIdSql } from "./taskSql";
 import type {
     TaskRepository as ITaskRepository,
     TaskRow,
@@ -27,5 +27,25 @@ export class TaskRepository implements ITaskRepository {
         );
 
         return row ? toTask(row) : undefined;
+    }
+
+    async create(task: Task): Promise<Task> {
+        const row = toTaskRow(task);
+        await this.storage.execute(createTaskSql, [
+            row.id,
+            row.growId,
+            row.growGroupId,
+            row.title,
+            row.dueDate,
+            row.urgency,
+            row.completed,
+            row.recurrenceInterval,
+            row.recurrenceUnit,
+            row.createdAt,
+            row.updatedAt,
+            row.archivedAt,
+            row.isArchived,
+        ]);
+        return task;
     }
 }

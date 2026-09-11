@@ -6,7 +6,7 @@ export function toTask(row: TaskRow): Task {
     return {
         id: row.id,
         growId: row.growId ?? undefined,
-        growGroupId: row.groupGrowId ?? undefined,
+        growGroupId: row.growGroupId ?? undefined,
         title: row.title,
         dueDate: new Date(row.dueDate),
         urgency: row.urgency as TaskUrgency,
@@ -26,7 +26,7 @@ export function toTaskRow(task: Task): TaskRow {
     return {
         id: task.id,
         growId: task.growId ?? null,
-        groupGrowId: task.growGroupId ?? null,
+        growGroupId: task.growGroupId ?? null,
         title: task.title,
         dueDate: task.dueDate.toISOString(),
         urgency: task.urgency,
