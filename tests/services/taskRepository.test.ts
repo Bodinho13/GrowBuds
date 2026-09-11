@@ -1,6 +1,6 @@
 import { SQLiteStorage } from "../../services/storage/sqliteStorage";
 import { TaskRepository } from "../../services/tasks/taskRepository";
-import { createTaskSql, getAllTasksSql, getTaskByIdSql } from "../../services/tasks/taskSql";
+import { createTaskSql, getAllTasksSql, getTaskByIdSql, updateTaskSql } from "../../services/tasks/taskSql";
 import { TaskRow } from "../../services/tasks/types";
 import { Task } from "../../types/Task";
 import { TaskUrgency } from "../../types/TaskUrgency";
@@ -102,5 +102,32 @@ describe("TaskRepository", () => {
             ]
         );
         expect(result).toEqual(task);
+    });
+
+    it("updates a task", async () => {
+        const updatedTask: Task = {
+            ...task,
+            title: "Düngen",
+            completed: true,
+            updatedAt: new Date("2026-09-04"),
+        };
+        const result = await repository.update(updatedTask);
+
+        expect(storage.execute).toHaveBeenCalledWith(updateTaskSql, [
+            updatedTask.growId ?? null,
+            updatedTask.growGroupId ?? null,
+            updatedTask.title,
+            updatedTask.dueDate.toISOString(),
+            updatedTask.urgency,
+            updatedTask.completed ? 1 : 0,
+            updatedTask.recurrence?.interval ?? null,
+            updatedTask.recurrence?.unit ?? null,
+            updatedTask.updatedAt.toISOString(),
+            updatedTask.archivedAt?.toISOString() ?? null,
+            updatedTask.isArchived ? 1 : 0,
+            updatedTask.id,
+        ]);
+
+        expect(result).toEqual(updatedTask);
     });
 });

@@ -22,4 +22,5 @@ export interface TaskRepository {
     getAll(): Promise<Task[]>;
     getById(id: string): Promise<Task | undefined>;
     create(task: Task): Promise<Task>;
+    update(task: Task): Promise<Task>;
 }
