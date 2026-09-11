@@ -5,7 +5,7 @@ export type TaskId = string;
 export type TaskRow = {
     id: string;
     growId: string | null;
-    groupGrowId: string | null;
+    growGroupId: string | null;
     title: string;
     dueDate: string;
     urgency: string;
@@ -21,4 +21,5 @@ export type TaskRow = {
 export interface TaskRepository {
     getAll(): Promise<Task[]>;
     getById(id: string): Promise<Task | undefined>;
+    create(task: Task): Promise<Task>;
 }
