@@ -1,7 +1,7 @@
 import { Grow } from "../../types/Grow";
 import { SQLiteStorage } from "../storage/sqliteStorage";
 
-import { createGrowSql, getAllGrowsSql, getGrowByIdSql, updateGrowSql } from "./growSql";
+import { createGrowSql, getAllGrowsSql, getGrowByIdSql, getGrowsByGrowGroupId, updateGrowSql } from "./growSql";
 import { toGrow, toGrowRow } from "./mapper";
 import { GrowRow } from "./types";
 import type { GrowRepository as IGrowRepository } from "./types";
@@ -21,6 +21,11 @@ export class GrowRepository implements IGrowRepository{
             getGrowByIdSql, [id]
         );
         return row ? toGrow(row) : undefined;
+    }
+
+    async getByGrowGroupId(growGroupId: string): Promise<Grow[]> {
+        const rows = await this.storage.getAll<GrowRow>(getGrowsByGrowGroupId, [growGroupId]);
+        return rows.map(toGrow);
     }
 
     async create(grow: Grow): Promise<Grow> {

@@ -18,6 +18,10 @@ class GrowService {
         return this.repository.getById(id);
     }
 
+    async getByGrowGroupId(growGroupId: string): Promise<Grow[]> {
+        return this.repository.getByGrowGroupId(growGroupId);
+    }
+
     async create(dto: CreateGrowDto): Promise<Grow> {
         const now = new Date();
         const grow: Grow = {

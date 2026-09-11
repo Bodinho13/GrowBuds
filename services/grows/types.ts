@@ -22,6 +22,7 @@ export interface GrowRow {
 export interface GrowRepository {
     getAll(): Promise<Grow[]>;
     getById(id: string): Promise<Grow | undefined>;
+    getByGrowGroupId(growGroupId: string): Promise<Grow[]>;
     create(grow: Grow): Promise<Grow>;
     update(grow: Grow): Promise<Grow | undefined>;
 };

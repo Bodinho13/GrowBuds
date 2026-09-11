@@ -1,4 +1,6 @@
+import { mockGrows } from "../../constants/mockData";
 import GrowService from "../../services/grows";
+import { GrowRepository } from "../../services/grows/types";
 import { CreateGrowDto } from "../../types/dto/CreateGrowDto";
 import { Grow } from "../../types/Grow";
 import { GrowMedium } from "../../types/GrowMedium";
@@ -9,9 +11,21 @@ describe("GrowService", () => {
     let repository: MockGrowRepository;
     let growService: GrowService;
 
+    let repo = {
+            getAll: jest.fn(),
+            getById: jest.fn(),
+            getByGrowGroupId: jest.fn(),
+            create: jest.fn(),
+            update: jest.fn(),
+        };
+    let growServ: GrowService;
+
     beforeEach(() => {
         repository = new MockGrowRepository();
         growService = new GrowService(repository);
+
+        jest.clearAllMocks();
+        growServ = new GrowService(repo);
     });
 
     it("return all grows", async () => {
@@ -31,6 +45,25 @@ describe("GrowService", () => {
         const grow = await growService.getById("invalid-id");
         expect(grow).toBeUndefined();
     });
+
+    it("return all grows belonging to a grow group", async () => {
+        repo.getByGrowGroupId.mockResolvedValue(mockGrows);
+
+        const result = await growServ.getByGrowGroupId("group-001");
+
+        expect(result).toHaveLength(2);
+        expect(repo.getByGrowGroupId).toHaveBeenCalledWith("group-001");
+        expect(result[0].growGroupId).toBe("group-001");
+    });
+
+    it("returns an empty array when the grow group has no grows", async () => {
+        repo.getByGrowGroupId.mockResolvedValue([]);
+        const result = await growServ.getByGrowGroupId("unknown");
+
+        expect(result).toEqual([]);
+        expect(repo.getByGrowGroupId).toHaveBeenCalledWith("unknown");
+    });
+
 
     it("creates a grow", async () => {
         const dto: CreateGrowDto = {

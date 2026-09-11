@@ -12,6 +12,10 @@ export class MockGrowRepository {
         return this.grows.find(grow => grow.id === id);
     }
 
+    async getByGrowGroupId(growGroupId: string): Promise<Grow[]> {
+        return this.grows.filter(grow => grow.growGroupId === growGroupId);
+    }
+
     async create(grow: Grow): Promise<Grow> {
         this.grows.push(grow);
         return grow;

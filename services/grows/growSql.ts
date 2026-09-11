@@ -2,6 +2,11 @@ export const getAllGrowsSql = `
     SELECT * FROM grows
 `;
 
+export const getGrowsByGrowGroupId = `
+    SELECT * FROM grows
+    WHERE growGroupId = ?
+`;
+
 export const getGrowByIdSql = `
     SELECT * FROM grows
     WHERE id = ?
