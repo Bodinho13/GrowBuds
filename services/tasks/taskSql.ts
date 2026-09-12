@@ -18,17 +18,18 @@ export const createTaskSql = `
         completed,
         recurrenceInterval.
         recurrenceUnit,
+        lastCompletedAt,
         createdAt,
         updatedAt,
         archivedAt,
         isArchived
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `;
 
 export const updateTaskSql = `
     UPDATE tasks
     SET growId = ?, growGroupId = ?, title = ?, dueDate = ?, urgency = ?, completed = ?,
-        recurrenceInterval = ?, recurrenceUnit = ?, updatedAt = ?, archivedAt = ?, isArchived = ?
+        recurrenceInterval = ?, recurrenceUnit = ?, lastCompletedAt = ?, updatedAt = ?, archivedAt = ?, isArchived = ?
     WHERE id = ?
 `;

@@ -15,6 +15,7 @@ export function toTask(row: TaskRow): Task {
                 interval: row.recurrenceInterval,
                 unit: row.recurrenceUnit as "day" | "week"
             } : undefined,
+        lastCompletedAt: row.lastCompletedAt ? new Date(row.lastCompletedAt) : undefined,
         createdAt: new Date(row.createdAt),
         updatedAt: new Date(row.updatedAt),
         archivedAt: row.archivedAt ? new Date(row.archivedAt) : undefined,
@@ -33,6 +34,7 @@ export function toTaskRow(task: Task): TaskRow {
         completed: task.completed ? 1 : 0,
         recurrenceInterval: task.recurrence?.interval ?? null,
         recurrenceUnit: task.recurrence?.unit ?? null,
+        lastCompletedAt: task.lastCompletedAt?.toISOString() ?? null,
         createdAt: task.createdAt.toISOString(),
         updatedAt: task.updatedAt.toISOString(),
         archivedAt: task.archivedAt?.toISOString() ?? null,

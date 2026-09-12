@@ -6,6 +6,6 @@ export const createGrowGroupsTableSql = `
         createdAt TEXT NOT NULL,
         updatedAt TEXT NOT NULL,
         archivedAt TEXT,
-        isArchived INTEGER NOT NULL DEFAULT 0,
+        isArchived INTEGER NOT NULL DEFAULT 0
     );
 `;
