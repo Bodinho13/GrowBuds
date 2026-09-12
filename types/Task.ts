@@ -12,6 +12,7 @@ export interface Task {
         interval: number;
         unit: "day" | "week";
     };
+    lastCompletedAt?: Date;
     createdAt: Date;
     updatedAt: Date;
     archivedAt?: Date;

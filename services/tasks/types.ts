@@ -12,6 +12,7 @@ export type TaskRow = {
     completed: number;
     recurrenceInterval: number | null;
     recurrenceUnit: string | null;
+    lastCompletedAt: string | null;
     createdAt: string;
     updatedAt: string;
     archivedAt: string | null;

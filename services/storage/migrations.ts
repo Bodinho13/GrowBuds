@@ -38,4 +38,17 @@ export async function migrateDatabase(db: SQLiteDatabase) {
 
         currentVersion = 3;
     }
+
+    if(currentVersion < 4) {
+        await db.execAsync(`
+            ALTER TABLE tasks
+            ADD COLUMN lastCompletedAt TEXT;
+        `);
+
+        await db.execAsync(`
+            PRAGMA user_version = 4;
+        `);
+
+        currentVersion = 4;
+    }
 }
