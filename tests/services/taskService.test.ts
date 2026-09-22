@@ -2,6 +2,7 @@ import TaskService from "../../services/tasks";
 import type { TaskRepository } from "../../services/tasks/types";
 import { CreateTaskDto } from "../../types/dto/CreateTaskDto";
 import { Task } from "../../types/Task";
+import { TaskStatus } from "../../types/TaskStatus";
 import { TaskUrgency } from "../../types/TaskUrgency";
 
 describe("TaskService", () => {
@@ -14,7 +15,9 @@ describe("TaskService", () => {
         title: "Gießen",
         dueDate: new Date("2026-09-03"),
         urgency: TaskUrgency.Medium,
+        status: TaskStatus.Open,
         completed: false,
+        lastCompletedAt: undefined,
         createdAt: new Date("2026-09-01"),
         updatedAt: new Date("2026-09-01"),
         isArchived: false,
@@ -141,6 +144,57 @@ describe("TaskService", () => {
         expect(repository.create).not.toHaveBeenCalled();
     });
 
+    it("sets timeToOpen to 70 for recurring tasks by default", async () => {
+        repository.create.mockImplementation( async (task) => task);
+        const dto: CreateTaskDto = {
+            growId: task.growId,
+            title: task.title,
+            dueDate: task.dueDate,
+            urgency: TaskUrgency.Low,
+            recurrence: {
+                interval: 4,
+                unit: "day",
+            },
+        };
+
+        const result = await taskService.create(dto);
+
+        expect(result.recurrence?.timeToReopen).toBe(70);
+    });
+
+    it("keeps a custom timeToReopen value", async () => {
+        repository.create.mockImplementation( async (task) => task);
+        const dto: CreateTaskDto = {
+            growId: task.growId,
+            title: task.title,
+            dueDate: task.dueDate,
+            urgency: TaskUrgency.Alert,
+            recurrence: {
+                interval: 3,
+                unit: "day",
+                timeToReopen: 80,
+            },
+        };
+
+        const result = await taskService.create(dto);
+
+        expect(result.recurrence?.timeToReopen).toBe(80);
+    });
+
+    it("does not add recurrence to non-recurring task", async () => {
+        repository.create.mockImplementation( async (task) => task);
+        const dto: CreateTaskDto = {
+            growId: task.growId,
+            title: task.title,
+            dueDate: task.dueDate,
+            urgency: TaskUrgency.Medium,
+        };
+
+        const result = await taskService.create(dto);
+
+        expect(result.recurrence).toBeUndefined();
+    });
+
     it("updates a task", async () => {
         repository.getById.mockResolvedValue(task);
         repository.update.mockImplementation(async (updatedTask) => updatedTask);
@@ -218,6 +272,52 @@ describe("TaskService", () => {
 
         expect(result).toBeUndefined();
         expect(repository.getById).toHaveBeenCalledWith("task-001");
+        expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    it("completes an open task", async () => {
+        repository.getById.mockResolvedValue(task);
+        repository.update.mockImplementation(async (completedTask) => completedTask);
+
+        const result = await taskService.complete(task.id);
+
+        expect(result).toBeDefined();
+        expect(result?.completed).toBe(true);
+        expect(result?.lastCompletedAt).toBeInstanceOf(Date);
+        expect(result?.updatedAt).not.toEqual(task.updatedAt);
+        expect(repository.update).toHaveBeenCalledTimes(1);
+        expect(repository.update).toHaveBeenCalledWith(
+            expect.objectContaining({
+                id: task.id,
+                completed: true,
+                lastCompletedAt: expect.any(Date),
+                updatedAt: expect.any(Date),
+            })
+        );
+    });
+
+    it("returns undefined when completing a non-existing task", async () => {
+        repository.getById.mockResolvedValue(undefined);
+
+        const result = await taskService.complete("does-not-exist");
+
+        expect(result).toBeUndefined();
+        expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    it("returns undefined when the task is already completed", async () => {
+        const completedAt = new Date("2026-09-10T10:00:00.000Z");
+        const completedTask: Task = {
+            ...task,
+            completed: true,
+            lastCompletedAt: completedAt,
+        };
+
+        repository.getById.mockResolvedValue(completedTask);
+
+        const result = await taskService.complete(task.id);
+
+        expect(result).toBeUndefined();
         expect(repository.update).not.toHaveBeenCalled();
     });
 });

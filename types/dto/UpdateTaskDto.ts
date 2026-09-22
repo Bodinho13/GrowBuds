@@ -10,5 +10,7 @@ export interface UpdateTaskDto {
     recurrence?: {
         interval: number;
         unit: "day" | "week";
+        timeToReopen?: number;
     };
+    leadTimeDays?: number;
 }

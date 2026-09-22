@@ -4,12 +4,14 @@ import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useTask } from "../hooks/useTask";
 import { EmptyState, LoadingView, Section } from "../components/common";
 import { Colors, Spacing, Typography } from "../theme";
+import { useServices } from "../services/ServicesContext";
 
 type Props = NativeStackScreenProps<TaskStackParamList, "TaskDetail">;
 
 export default function TaskDetailScreen({ route, navigation }: Props) {
     const { taskId, relatedName } = route.params;
-    const { task, loading } = useTask(taskId);
+    const {taskService} = useServices();
+    const { task, loading, refresh } = useTask(taskId);
 
     if (loading) return <LoadingView />;
 
@@ -46,7 +48,10 @@ export default function TaskDetailScreen({ route, navigation }: Props) {
                 </Text>
             </Section>
 
-            {!task.completed && <Button title="Erledigen" onPress={() => {}} />}
+            {!task.completed && <Button title="Erledigen" onPress={async() => {
+                await taskService.complete(task.id);
+                await refresh();
+            }} />}
         </ScrollView>
     );
 }

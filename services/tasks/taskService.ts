@@ -1,6 +1,7 @@
 import { CreateTaskDto } from "../../types/dto/CreateTaskDto";
 import { UpdateTaskDto } from "../../types/dto/UpdateTaskDto";
 import type { Task } from "../../types/Task";
+import { TaskStatus } from "../../types/TaskStatus";
 import { createId } from "../../utils/id";
 import { TaskRepository } from "./types";
 
@@ -23,6 +24,11 @@ class TaskService {
         const task: Task = {
             id: createId(),
             ...dto,
+            status: TaskStatus.Planned,
+            recurrence: dto.recurrence ? {
+                ...dto.recurrence,
+                timeToReopen: dto.recurrence.timeToReopen ?? 70,
+            } : undefined,
             completed: false,
             createdAt: now,
             updatedAt: now,
@@ -62,6 +68,23 @@ class TaskService {
         };
 
         return this.repository.update(archivedTask);
+    }
+
+    async complete(id: string): Promise<Task | undefined> {
+        const existingTask = await this.repository.getById(id);
+
+        if(!existingTask || existingTask.completed)
+            return undefined;
+
+        const now = new Date();
+        const completedTask: Task = {
+            ...existingTask,
+            completed: true,
+            lastCompletedAt: now,
+            updatedAt: now,
+        };
+
+        return this.repository.update(completedTask);
     }
     
     private validateTarget(growId?: string, growGroupId?: string): void {
