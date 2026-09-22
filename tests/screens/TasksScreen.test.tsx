@@ -5,6 +5,7 @@ import { useServices } from "../../services/ServicesContext";
 import { GrowMedium } from "../../types/GrowMedium";
 import { GrowStage } from "../../types/GrowStage";
 import { TaskUrgency } from "../../types/TaskUrgency";
+import { TaskStatus } from "../../types/TaskStatus";
 
 jest.mock("../../hooks/useTasks");
 jest.mock("../../services/ServicesContext");
@@ -23,6 +24,7 @@ const tasks = [
         title: "Gießen",
         dueDate: new Date("2026-09-05"),
         urgency: TaskUrgency.Medium,
+        status: TaskStatus.Open,
         completed: false,
         createdAt: new Date("2026-09-01"),
         updatedAt: new Date("2026-09-03"),

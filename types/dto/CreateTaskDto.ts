@@ -9,5 +9,7 @@ export interface CreateTaskDto {
     recurrence?: {
         interval: number;
         unit: "day" | "week";
-    }
+        timeToReopen?: number;
+    };
+    leadTimeDays?: number;
 }
