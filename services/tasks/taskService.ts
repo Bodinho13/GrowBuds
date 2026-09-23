@@ -3,6 +3,7 @@ import { UpdateTaskDto } from "../../types/dto/UpdateTaskDto";
 import type { Task } from "../../types/Task";
 import { TaskStatus } from "../../types/TaskStatus";
 import { createId } from "../../utils/id";
+import { getTaskStatus } from "../../utils/taskStatus";
 import { TaskRepository } from "./types";
 
 class TaskService {
@@ -11,11 +12,24 @@ class TaskService {
     ) {}
 
     async getAll(): Promise<Task[]> {
-        return this.repository.getAll();
+        const tasks = await this.repository.getAll();
+        const now = new Date();
+
+        return tasks.map((task) => ({
+            ...task,
+            status: getTaskStatus(task, now),
+        }));
     }
 
     async getById(id: string): Promise<Task | undefined> {
-        return this.repository.getById(id);
+        const task = await this.repository.getById(id);
+        if(!task)
+            return undefined;
+
+        return {
+            ...task,
+            status: getTaskStatus(task, new Date()),
+        };
     }
 
     async create(dto: CreateTaskDto): Promise<Task> {
@@ -43,7 +57,7 @@ class TaskService {
         if(!existingTask)
             return undefined;
 
-        this.validateTarget(dto.growId, dto.growGroupId);
+        this.validateTarget(dto.growId ?? existingTask.growId, dto.growGroupId ?? existingTask.growGroupId);
 
         const updatedTask: Task = {
             ...existingTask,
