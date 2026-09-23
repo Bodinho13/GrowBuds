@@ -15,7 +15,7 @@ describe("TaskService", () => {
         title: "Gießen",
         dueDate: new Date("2026-09-03"),
         urgency: TaskUrgency.Medium,
-        status: TaskStatus.Open,
+        status: TaskStatus.Overdue,
         completed: false,
         lastCompletedAt: undefined,
         createdAt: new Date("2026-09-01"),
@@ -36,6 +36,10 @@ describe("TaskService", () => {
         taskService = new TaskService(repository);
     });
 
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
     it("return all tasks", async () => {
         repository.getAll.mockResolvedValue([task]);
 
@@ -45,6 +49,23 @@ describe("TaskService", () => {
         expect(repository.getAll).toHaveBeenCalledTimes(1);
     });
 
+    it("calculates the current status for all tasks", async () => {
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date("2026-09-18T10:00:00"));
+
+        const taskWrongStatus: Task = {
+            ...task,
+            dueDate: new Date("2026-09-20T10:00:00"),
+            leadTimeDays: 3,
+            status: TaskStatus.Planned,
+        };
+        repository.getAll.mockResolvedValue([taskWrongStatus]);
+
+        const result = await taskService.getAll();
+
+        expect(result[0].status).toBe(TaskStatus.Open);
+    });
+
     it("return a task by id", async () => {
         repository.getById.mockResolvedValue(task);
 
@@ -52,6 +73,23 @@ describe("TaskService", () => {
 
         expect(result).toEqual(task);
         expect(repository.getById).toHaveBeenCalledWith("task-001");
+    });
+
+    it("calculates the current status for a task by id", async () => {
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date("2026-09-15T10:00:00"));
+
+        const taskWrongStatus: Task = {
+            ...task,
+            dueDate: new Date("2026-09-17T10:00:00"),
+            leadTimeDays: 3,
+            status: TaskStatus.Planned,
+        };
+        repository.getById.mockResolvedValue(taskWrongStatus);
+
+        const result = await taskService.getById(task.id);
+
+        expect(result?.status).toBe(TaskStatus.Open);
     });
 
     it("returns undefined when a task does not exist", async () => {
