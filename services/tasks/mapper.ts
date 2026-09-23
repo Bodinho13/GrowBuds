@@ -1,4 +1,5 @@
 import type { Task } from "../../types/Task";
+import { TaskStatus } from "../../types/TaskStatus";
 import { TaskUrgency } from "../../types/TaskUrgency";
 import { TaskRow } from "./types";
 
@@ -8,14 +9,22 @@ export function toTask(row: TaskRow): Task {
         growId: row.growId ?? undefined,
         growGroupId: row.growGroupId ?? undefined,
         title: row.title,
+        status: TaskStatus.Planned,
         dueDate: new Date(row.dueDate),
         urgency: row.urgency as TaskUrgency,
         completed: row.completed === 1,
-        recurrence: row.recurrenceInterval !== null && row.recurrenceUnit !== null ? {
-                interval: row.recurrenceInterval,
-                unit: row.recurrenceUnit as "day" | "week"
-            } : undefined,
-        lastCompletedAt: row.lastCompletedAt ? new Date(row.lastCompletedAt) : undefined,
+        recurrence:
+            row.recurrenceInterval !== null && row.recurrenceUnit !== null
+                ? {
+                      interval: row.recurrenceInterval,
+                      unit: row.recurrenceUnit as "day" | "week",
+                      timeToReopen: row.timeToReopen ?? undefined,
+                  }
+                : undefined,
+        leadTimeDays: row.leadTimeDays ?? undefined,
+        lastCompletedAt: row.lastCompletedAt
+            ? new Date(row.lastCompletedAt)
+            : undefined,
         createdAt: new Date(row.createdAt),
         updatedAt: new Date(row.updatedAt),
         archivedAt: row.archivedAt ? new Date(row.archivedAt) : undefined,
@@ -34,6 +43,8 @@ export function toTaskRow(task: Task): TaskRow {
         completed: task.completed ? 1 : 0,
         recurrenceInterval: task.recurrence?.interval ?? null,
         recurrenceUnit: task.recurrence?.unit ?? null,
+        timeToReopen: task.recurrence?.timeToReopen ?? null,
+        leadTimeDays: task.leadTimeDays ?? null,
         lastCompletedAt: task.lastCompletedAt?.toISOString() ?? null,
         createdAt: task.createdAt.toISOString(),
         updatedAt: task.updatedAt.toISOString(),

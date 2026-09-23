@@ -3,6 +3,7 @@ import { TaskRepository } from "../../services/tasks/taskRepository";
 import { createTaskSql, getAllTasksSql, getTaskByIdSql, updateTaskSql } from "../../services/tasks/taskSql";
 import { TaskRow } from "../../services/tasks/types";
 import { Task } from "../../types/Task";
+import { TaskStatus } from "../../types/TaskStatus";
 import { TaskUrgency } from "../../types/TaskUrgency";
 
 describe("TaskRepository", () => {
@@ -13,12 +14,14 @@ describe("TaskRepository", () => {
         id: "task-001",
         growId: "grow-001",
         title: "Gießen",
+        status: TaskStatus.Planned,
         dueDate: new Date("2026-09-03"),
         urgency: TaskUrgency.Medium,
         completed: false,
         recurrence: {
             interval: 2,
-            unit: "day"
+            unit: "day",
+            timeToReopen: 70,
         },
         createdAt: new Date("2026-09-01"),
         updatedAt: new Date("2026-09-02"),
@@ -35,6 +38,9 @@ describe("TaskRepository", () => {
         completed: 0,
         recurrenceInterval: 2,
         recurrenceUnit: "day",
+        timeToReopen: 70,
+        leadTimeDays: null,
+        lastCompletedAt: null,
         createdAt: "2026-09-01T00:00:00.000Z",
         updatedAt: "2026-09-02T00:00:00.000Z",
         archivedAt: null,
@@ -95,6 +101,9 @@ describe("TaskRepository", () => {
                 task.completed ? 1 : 0,
                 task.recurrence?.interval ?? null,
                 task.recurrence?.unit ?? null,
+                task.recurrence?.timeToReopen ?? null,
+                task.leadTimeDays ?? null,
+                task.lastCompletedAt?.toISOString() ?? null,
                 task.createdAt.toISOString(),
                 task.updatedAt.toISOString(),
                 task.archivedAt?.toISOString() ?? null,
@@ -122,6 +131,9 @@ describe("TaskRepository", () => {
             updatedTask.completed ? 1 : 0,
             updatedTask.recurrence?.interval ?? null,
             updatedTask.recurrence?.unit ?? null,
+            updatedTask.recurrence?.timeToReopen ?? null,
+            updatedTask.leadTimeDays ?? null,
+            updatedTask.lastCompletedAt?.toISOString ?? null,
             updatedTask.updatedAt.toISOString(),
             updatedTask.archivedAt?.toISOString() ?? null,
             updatedTask.isArchived ? 1 : 0,

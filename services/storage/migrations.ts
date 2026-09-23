@@ -51,4 +51,22 @@ export async function migrateDatabase(db: SQLiteDatabase) {
 
         currentVersion = 4;
     }
+
+    if(currentVersion < 5) {
+        await db.execAsync(`
+            ALTER TABLE tasks
+            ADD COLUMN timeToReopen INTEGER;
+        `);
+
+        await db.execAsync(`
+            ALTER TABLE tasks
+            ADD COLUMN leadTimeDays INTEGER;
+        `);
+
+        await db.execAsync(`
+            PRAGMA user_version = 5;
+        `);
+
+        currentVersion = 5;
+    }
 }

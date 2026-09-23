@@ -12,6 +12,8 @@ export type TaskRow = {
     completed: number;
     recurrenceInterval: number | null;
     recurrenceUnit: string | null;
+    timeToReopen: number | null;
+    leadTimeDays: number | null;
     lastCompletedAt: string | null;
     createdAt: string;
     updatedAt: string;
