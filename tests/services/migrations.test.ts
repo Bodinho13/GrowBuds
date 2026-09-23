@@ -11,7 +11,7 @@ describe("migrateDatabase", () => {
         } as unknown as jest.Mocked<SQLiteDatabase>;
     });
 
-    it("migrates a new database to version 3", async () => {
+    it("migrates a new database to version 5", async () => {
         db.getFirstAsync.mockResolvedValue({ user_version: 0 });
         await migrateDatabase(db);
 
@@ -44,48 +44,56 @@ describe("migrateDatabase", () => {
             5,
             expect.stringContaining("PRAGMA user_version = 3"),
         );
-    });
-
-    it("migrates a version 1 database to version 4", async () => {
-        db.getFirstAsync.mockResolvedValue({
-            user_version: 1,
-        });
-        await migrateDatabase(db);
-
-        expect(db.execAsync).toHaveBeenCalledTimes(6);
         expect(db.execAsync).toHaveBeenNthCalledWith(
-            1,
-            expect.stringContaining("ALTER TABLE plants")
-        );
-        expect(db.execAsync).toHaveBeenNthCalledWith(
-            1,
-            expect.stringContaining("ADD COLUMN archivedAt TEXT")
-        );
-        expect(db.execAsync).toHaveBeenNthCalledWith(
-            2,
-            expect.stringContaining("PRAGMA user_version = 2")
-        );
-        expect(db.execAsync).toHaveBeenNthCalledWith(
-            3,
-            expect.stringContaining("ADD COLUMN growGroupId TEXT;"),
-        );
-        expect(db.execAsync).toHaveBeenNthCalledWith(
-            4,
-            expect.stringContaining("PRAGMA user_version = 3"),
-        );
-        expect(db.execAsync).toHaveBeenNthCalledWith(
-            5,
-            expect.stringContaining("ALTER TABLE tasks"),
+            6,
+            expect.stringContaining("ALTER TABLE tasks")
         );
         expect(db.execAsync).toHaveBeenNthCalledWith(
             6,
-            expect.stringContaining("PRAGMA user_version = 4"),
+            expect.stringContaining("ADD COLUMN lastCompletedAt TEXT")
+        );
+        expect(db.execAsync).toHaveBeenNthCalledWith(
+            7,
+            expect.stringContaining("PRAGMA user_version = 4")
+        );
+        expect(db.execAsync).toHaveBeenNthCalledWith(
+            8,
+            expect.stringContaining("ADD COLUMN timeToReopen INTEGER")
+        );
+        expect(db.execAsync).toHaveBeenNthCalledWith(
+            9,
+            expect.stringContaining("ADD COLUMN leadTimeDays INTEGER")
+        );
+        expect(db.execAsync).toHaveBeenNthCalledWith(
+            10,
+            expect.stringContaining("PRAGMA user_version = 5")
         );
     });
 
-    it("does nothing when database is already at version 4", async () => {
+    it("migrates a version 4 database to version 4", async () => {
         db.getFirstAsync.mockResolvedValue({
             user_version: 4,
+        });
+        await migrateDatabase(db);
+
+        expect(db.execAsync).toHaveBeenCalledTimes(3);
+        expect(db.execAsync).toHaveBeenNthCalledWith(
+            1,
+            expect.stringContaining("ADD COLUMN timeToReopen INTEGER")
+        );
+        expect(db.execAsync).toHaveBeenNthCalledWith(
+            2,
+            expect.stringContaining("ADD COLUMN leadTimeDays INTEGER")
+        );
+        expect(db.execAsync).toHaveBeenNthCalledWith(
+            3,
+            expect.stringContaining("PRAGMA user_version = 5")
+        );
+    });
+
+    it("does nothing when database is already at version 5", async () => {
+        db.getFirstAsync.mockResolvedValue({
+            user_version: 5,
         });
         await migrateDatabase(db);
 
@@ -96,6 +104,6 @@ describe("migrateDatabase", () => {
         db.getFirstAsync.mockResolvedValue(null);
         await migrateDatabase(db);
 
-        expect(db.execAsync).toHaveBeenCalledTimes(7);
+        expect(db.execAsync).toHaveBeenCalledTimes(10);
     });
 });

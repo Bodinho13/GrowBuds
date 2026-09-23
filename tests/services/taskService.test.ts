@@ -254,6 +254,65 @@ describe("TaskService", () => {
         expect(repository.update).toHaveBeenCalledTimes(1);
     });
 
+    it("keeps existing timeToReopen when updating recurrence without specifying", async () => {
+        const existingTask: Task = {
+            ...task,
+            recurrence: {
+                interval: 2,
+                unit: "day",
+                timeToReopen: 70,
+            },
+        };
+        repository.getById.mockResolvedValue(existingTask);
+
+        await taskService.update("task-001", {
+            recurrence: {
+                interval: 3,
+                unit: "day",
+            },
+        });
+
+        expect(repository.update).toHaveBeenCalledWith(
+            expect.objectContaining({
+                recurrence: {
+                    interval: 3,
+                    unit: "day",
+                    timeToReopen: 70,
+                },
+            })
+        );
+    });
+
+    it("updates timeToReopen when a new value is provided", async () => {
+        const existingTask: Task = {
+            ...task,
+            recurrence: {
+                interval: 2,
+                unit: "day",
+                timeToReopen: 70,
+            }
+        };
+        repository.getById.mockResolvedValue(existingTask);
+
+        await taskService.update("task-001", {
+            recurrence: {
+                interval: 3,
+                unit: "day",
+                timeToReopen: 80,
+            }
+        });
+
+        expect(repository.update).toHaveBeenCalledWith(
+            expect.objectContaining({
+                recurrence: {
+                    interval: 3,
+                    unit: "day",
+                    timeToReopen: 80,
+                },
+            })
+        );
+    });
+
     it("returns undefined when updating a non-existing task", async () => {
         repository.getById.mockResolvedValue(undefined);
 

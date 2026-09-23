@@ -10,6 +10,8 @@ export const createTasksTableSql = `
         completed INTEGER NOT NULL DEFAULT 0,
         recurrenceInterval INTEGER,
         recurrenceUnit TEXT,
+        timeToReopen INTEGER,
+        leadTimeDays INTEGER,
         lastCompletedAt TEXT,
         createdAt TEXT NOT NULL,
         updatedAt TEXT NOT NULL,
