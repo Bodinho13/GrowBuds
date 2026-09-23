@@ -3,6 +3,7 @@ import { UpdateTaskDto } from "../../types/dto/UpdateTaskDto";
 import type { Task } from "../../types/Task";
 import { TaskStatus } from "../../types/TaskStatus";
 import { createId } from "../../utils/id";
+import { getNextDueDate } from "../../utils/recurrence";
 import { getTaskStatus } from "../../utils/taskStatus";
 import { TaskRepository } from "./types";
 
@@ -100,6 +101,9 @@ class TaskService {
         const now = new Date();
         const completedTask: Task = {
             ...existingTask,
+            dueDate: existingTask.recurrence 
+                ? getNextDueDate(now, existingTask.recurrence)
+                : existingTask.dueDate,
             completed: true,
             lastCompletedAt: now,
             updatedAt: now,

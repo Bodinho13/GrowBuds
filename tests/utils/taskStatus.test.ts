@@ -79,6 +79,25 @@ describe("getTaskStatus", () => {
         expect(result).toBe(TaskStatus.Open);
     });
 
+    it("returns Open exactly at the reopen threshold", () => {
+        const task: Task = {
+            ...baseTask,
+            dueDate: new Date("2026-09-11T10:00:00"),
+            lastCompletedAt: new Date("2026-09-01T10:00:00"),
+            recurrence: {
+                interval: 10,
+                unit: "day",
+                timeToReopen: 70,
+            },
+        };
+
+        const resultPlanned = getTaskStatus(task, new Date("2026-09-08T09:59:59"));
+        const resultOpen = getTaskStatus(task, new Date("2026-09-08T10:00:00"));
+
+        expect(resultPlanned).toBe(TaskStatus.Planned);
+        expect(resultOpen).toBe(TaskStatus.Open);
+    });
+
     it("uses 70 percent as the default reopen threshold", () => {
         const task: Task = {
             ...baseTask,
@@ -99,7 +118,7 @@ describe("getTaskStatus", () => {
         const task: Task = {
             ...baseTask,
             dueDate: new Date("2026-09-15T10:00:00"),
-            lastCompletedAt: new Date("2026-09-901T10:00:00"),
+            lastCompletedAt: new Date("2026-09-01T10:00:00"),
             recurrence: {
                 interval: 2,
                 unit: "week",

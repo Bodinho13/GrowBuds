@@ -2,7 +2,6 @@
 type Recurrence = {
     interval: number;
     unit: "day" | "week";
-    timeToReopen: number;
 }
 
 export function getNextDueDate(lastCompletedAt: Date, recurrence: Recurrence): Date {
