@@ -393,6 +393,54 @@ describe("TaskService", () => {
         );
     });
 
+    it("sets the next due date when completing a recurring task", async () => {
+        const existingTask: Task = {
+            ...task,
+            dueDate: new Date("2026-09-05"),
+            recurrence: {
+                interval: 3,
+                unit: "day",
+                timeToReopen: 70,
+            },
+        };
+        repository.getById.mockResolvedValue(existingTask);
+
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date("2026-09-07T10:00:00"));
+
+        await taskService.complete("task-001");
+
+            expect(repository.update).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    completed: true,
+                    dueDate: new Date("2026-09-10T10:00:00"),
+                    lastCompletedAt: new Date("2026-09-07T10:00:00"),
+            })
+        );
+    });
+
+    it("keeps the due date when completing a non-recurring task", async () => {
+        const existingTask: Task ={
+            ...task,
+            recurrence: undefined,
+            dueDate: new Date("2026-09-05"),
+        };
+        repository.getById.mockResolvedValue(existingTask);
+
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date("2026-09-07T10:00:00"));
+
+        await taskService.complete("task-001");
+
+        expect(repository.update).toHaveBeenCalledWith(
+            expect.objectContaining({
+                completed: true,
+                dueDate: new Date("2026-09-05"),
+                lastCompletedAt: new Date("2026-09-07T10:00:00"),
+            })
+        );
+    });
+
     it("returns undefined when completing a non-existing task", async () => {
         repository.getById.mockResolvedValue(undefined);
 
