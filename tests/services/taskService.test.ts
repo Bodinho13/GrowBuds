@@ -465,4 +465,70 @@ describe("TaskService", () => {
         expect(result).toBeUndefined();
         expect(repository.update).not.toHaveBeenCalled();
     });
+
+    it("reopens a completed recurring task after the reopen threshold", async () => {
+        const existingTask: Task = {
+            ...task,
+            completed: true,
+            lastCompletedAt: new Date("2026-09-01T10:00:00"),
+            dueDate: new Date("2026-09-11T10:00:00"),
+            recurrence: {
+                interval: 10,
+                unit: "day",
+                timeToReopen: 70,
+            },
+        };
+        repository.getById.mockResolvedValue(existingTask);
+        repository.update.mockResolvedValue({
+            ...existingTask,
+            completed: false,
+            status: TaskStatus.Open,
+        });
+
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date("2026-09-08T10:00:00"));
+
+        const result = await taskService.getById("task-001");
+
+        expect(result).toEqual(
+            expect.objectContaining({
+                completed: false,
+                status: TaskStatus.Open,
+            })
+        );
+        expect(repository.update).toHaveBeenCalledWith(
+            expect.objectContaining({
+                completed: false,
+                status: TaskStatus.Open,
+            })
+        );
+    });
+
+    it("keeps a completed task completed before the reopen threshold", async () => {
+        const existingTask: Task = {
+            ...task,
+            completed: true,
+            lastCompletedAt: new Date("2026-09-01T10:00:00"),
+            dueDate: new Date("2026-09-11T 10:00:00"),
+            recurrence: {
+                interval: 10,
+                unit: "day",
+                timeToReopen: 70
+            },
+        };
+        repository.getById.mockResolvedValue(existingTask);
+
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date("2026-09-08T09:59:59"));
+
+        const result = await taskService.getById("task-001");
+
+        expect(result).toEqual(
+            expect.objectContaining({
+                completed: true,
+                status: TaskStatus.Planned,
+            })
+        );
+        expect(repository.update).not.toHaveBeenCalled();
+    });
 });

@@ -16,10 +16,9 @@ class TaskService {
         const tasks = await this.repository.getAll();
         const now = new Date();
 
-        return tasks.map((task) => ({
-            ...task,
-            status: getTaskStatus(task, now),
-        }));
+        return Promise.all(tasks.map((task) => 
+            this.synchronizeTaskStatus(task, now)
+        ));
     }
 
     async getById(id: string): Promise<Task | undefined> {
@@ -27,10 +26,7 @@ class TaskService {
         if(!task)
             return undefined;
 
-        return {
-            ...task,
-            status: getTaskStatus(task, new Date()),
-        };
+        return this.synchronizeTaskStatus(task, new Date());
     }
 
     async create(dto: CreateTaskDto): Promise<Task> {
@@ -117,6 +113,26 @@ class TaskService {
             throw new Error("A task can belong to either a grow or grow group, not both.");
         if(!growId && !growGroupId)
             throw new Error("A task must belong to either a grow or grow group.");
+    }
+
+    private async synchronizeTaskStatus(task: Task, now: Date): Promise<Task> {
+        const status = getTaskStatus(task, now);
+
+        if(task.recurrence && task.completed && (status === TaskStatus.Open || status === TaskStatus.Overdue)){
+            const reopenedTask: Task = {
+                ...task,
+                completed: false,
+                status,
+                updatedAt: now,
+            };
+
+            return this.repository.update(reopenedTask);
+        }
+
+        return {
+            ...task,
+            status
+        };
     }
 }
 
