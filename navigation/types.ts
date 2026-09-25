@@ -37,4 +37,5 @@ export type TaskStackParamList = {
         taskId: string;
         relatedName: string;
     };
+    CreateTask: undefined;
 }

@@ -2,10 +2,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import DashboardScreen from "../screens/DashboardScreen";
 import CalendarScreen from "../screens/CalendarScreen";
-import TasksScreen from "../screens/TasksScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import PlantsStack from "./PlantsStack";
 import GrowsStack from "./GrowStack";
+import TasksStack from "./TasksStack";
 
 import type { TabParamList } from "./types";
 
@@ -38,7 +38,8 @@ export default function TabNavigator() {
 
             <Tab.Screen 
                 name="Aufgaben"
-                component={TasksScreen}
+                component={TasksStack}
+                options={{headerShown: false}}
             />
 
             <Tab.Screen 
