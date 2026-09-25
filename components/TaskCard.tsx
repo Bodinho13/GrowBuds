@@ -18,17 +18,26 @@ export default function TaskCard({task, growName, onPress}: Props) {
             onPress={onPress}
         >
             <View style={styles.content}>
+                <View style={styles.titleRow}>
                 <Text style={[
                     styles.title,
                     task.completed && styles.completedText,
                 ]}>
                     {task.title}
                 </Text>
+
+                    <View style={styles.statusBadge}>
+                        <Text style={styles.statusText}>
+                            {task.status}
+                        </Text>
+                    </View>
+                </View>
+
                 {growName && (
                     <Text style={styles.cardText}>{growName}</Text>
                 )}
                 <Text style={styles.cardText}>
-                    Fällig: {task.dueDate.toLocaleDateString("de-De")}
+                    Fällig: {task.dueDate.toLocaleDateString("de-DE")}
                 </Text>
                 <Text style={styles.cardText}>
                     Dringlichkeit: {task.urgency}
@@ -48,8 +57,25 @@ const styles = StyleSheet.create({
     content: {
         gap: Spacing.sm,
     },
+    titleRow: {
+        flexDirection: "row",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        gap: Spacing.sm,
+    },
     title: {
         fontSize: Typography.body,
+        fontWeight: "600",
+        color: Colors.text,
+    },
+    statusBadge: {
+        paddingHorizontal: Spacing.sm,
+        paddingVertical: Spacing.xs,
+        borderRadius: Radius.sm,
+        backgroundColor: Colors.background,
+    },
+    statusText: {
+        fontSize: Typography.caption,
         fontWeight: "600",
         color: Colors.text,
     },
