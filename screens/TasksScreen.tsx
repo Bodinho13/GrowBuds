@@ -14,7 +14,7 @@ import TaskCard from "../components/TaskCard";
 type Props = NativeStackScreenProps<TaskStackParamList, "TasksList">;
 
 export default function TasksScreen({ navigation }: Props) {
-    const { growService } = useServices();
+    const { growService, taskService } = useServices();
     const { tasks, loading, refresh } = useTasks();
 
     const [growNames, setGrowNames] = useState<Record<string, string>>({});
@@ -33,6 +33,11 @@ export default function TasksScreen({ navigation }: Props) {
             refresh();
         }, [refresh]),
     );
+
+    async function handleComplete(taskId: string) {
+        await taskService.complete(taskId);
+        await refresh();
+    }
 
     if (loading) return <LoadingView />;
 
@@ -60,6 +65,18 @@ export default function TasksScreen({ navigation }: Props) {
                             growName={
                                 item.growId ? growNames[item.growId] : undefined
                             }
+                            onEdit={() => 
+                                navigation.navigate("EditTask", {
+                                    taskId: item.id,
+                                })
+                            }
+                            onInfo={() => 
+                                navigation.navigate("TaskDetail", {
+                                    taskId: item.id,
+                                    relatedName: item.growId ? growNames[item.growId] : "Grow-Gruppe",
+                                })
+                            }
+                            onComplete={() => handleComplete(item.id)}
                         />
                     )}
                 />

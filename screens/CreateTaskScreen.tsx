@@ -9,6 +9,7 @@ import { TaskUrgency } from "../types/TaskUrgency";
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import Select from "../components/common/Select";
 import { Colors, Radius, Spacing, Typography } from "../theme";
+import { Section } from "../components/common";
 
 type Props = NativeStackScreenProps<TaskStackParamList, "CreateTask">;
 
@@ -20,6 +21,9 @@ export default function CreateTaskScreen({ navigation }: Props) {
     const [title, setTitle] = useState("");
     const [dueDate, setDueDate] = useState(new Date());
     const [urgency, setUrgency] = useState(TaskUrgency.Medium);
+    const [recurrenceEnabled, setRecurrenceEnabled] = useState(false);
+    const [recurrenceInterval, setRecurrenceInterval] = useState("1");
+    const [recurrenceUnit, setRecurrenceUnit] = useState<"day" | "week">("day");
 
     useEffect(() => {
         async function loadGrows() {
@@ -35,11 +39,23 @@ export default function CreateTaskScreen({ navigation }: Props) {
     async function handleCreate() {
         if (!selGrow || !title.trim()) return;
 
+        if(recurrenceEnabled) {
+            const interval = Number(recurrenceInterval);
+
+            if(!Number.isInteger(interval) || interval < 0)
+                return;
+        }
+
         await taskService.create({
             growId: selGrow.id,
             title: title.trim(),
             dueDate,
             urgency,
+            recurrence: recurrenceEnabled
+                ? {
+                    interval: Number(recurrenceInterval),
+                    unit: recurrenceUnit
+                } : undefined,
         });
 
         navigation.goBack();
@@ -100,6 +116,41 @@ export default function CreateTaskScreen({ navigation }: Props) {
                     onChange={setUrgency}
                 />
 
+                <Section title="Wiederholung">
+                    <View style={styles.checkboxRow}>
+                        <Text style={styles.checkboxLabel}>Aufgabe Wiederholen ?  </Text>
+                        <Pressable
+                            style={[
+                                styles.checkbox,
+                                recurrenceEnabled && styles.checkboxChecked,
+                            ]}
+                            onPress={() => setRecurrenceEnabled((current) => !current)}
+                        >
+                            {recurrenceEnabled && (
+                                <Text style={styles.checkboxCheck}>✓</Text>
+                            )}
+                        </Pressable>
+                    </View>
+                    {recurrenceEnabled && (
+                        <View style={styles.recurrenceContainer}>
+                            <Text style={styles.label}>Alle</Text>
+                            <TextInput
+                                value={recurrenceInterval}
+                                onChangeText={setRecurrenceInterval}
+                                keyboardType="numeric"
+                                style={styles.intervalInput}
+                            />
+                            <Select
+                                label="Einheit"
+                                value={recurrenceUnit}
+                                options={["day", "week"]}
+                                getLabel={(value) => value === "day" ? "Tag(e)" : "Woche(n)"}
+                                onChange={setRecurrenceUnit}
+                            />
+                        </View>
+                    )}
+                </Section>
+
                 <Pressable
                     testID="create-task-button"
                     style={[
@@ -153,6 +204,49 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "flex-end",
         alignItems: "center",
+    },
+    checkboxRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: Spacing.md,
+        marginBottom: Spacing.md,
+    },
+    checkbox: {
+        width: 24,
+        height: 24,
+        borderWidth: 1,
+        borderColor: Colors.border,
+        borderRadius: Radius.sm,
+        backgroundColor: Colors.surface,
+        alignItems: "center",
+        justifyContent: "center",
+        marginRight: Spacing.sm,
+    },
+    checkboxChecked: {
+        backgroundColor: Colors.primary,
+        borderColor: Colors.primary,
+    },
+    checkboxCheck: {
+        color: Colors.background,
+        fontSize: Typography.body,
+        fontWeight: "bold",
+    },
+    checkboxLabel: {
+        color: Colors.text,
+        fontSize: Typography.body,
+    },
+    recurrenceContainer: {
+        marginTop: Spacing.sm,
+    },
+    intervalInput: {
+        borderWidth: 1,
+        borderColor: Colors.border,
+        borderRadius: Radius.md,
+        backgroundColor: Colors.surface,
+        padding: Spacing.md,
+        fontSize: Typography.body,
+        marginBottom: Spacing.md,
+        color: Colors.text,
     },
     button: {
         backgroundColor: Colors.primary,
