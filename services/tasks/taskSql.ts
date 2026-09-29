@@ -16,7 +16,7 @@ export const createTaskSql = `
         dueDate,
         urgency,
         completed,
-        recurrenceInterval.
+        recurrenceInterval,
         recurrenceUnit,
         timeToReopen,
         leadTimeDays,

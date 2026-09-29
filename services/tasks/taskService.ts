@@ -59,13 +59,20 @@ class TaskService {
         const updatedTask: Task = {
             ...existingTask,
             ...dto,
-            recurrence: dto.recurrence ? {
-                    ...existingTask.recurrence,
-                    ...dto.recurrence,
-                    timeToReopen: dto.recurrence.timeToReopen ??
-                        existingTask.recurrence?.timeToReopen ??
-                        70,
-                } : existingTask.recurrence,
+            recurrence: Object.prototype.hasOwnProperty.call(
+                    dto,
+                    "recurrence",
+                )
+                    ? dto.recurrence
+                        ? {
+                            ...existingTask.recurrence,
+                            ...dto.recurrence,
+                            timeToReopen: dto.recurrence.timeToReopen ??
+                                existingTask.recurrence?.timeToReopen ??
+                                70,
+                        }
+                        : undefined
+                    : existingTask.recurrence,
             updatedAt: new Date(),
         };
 

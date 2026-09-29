@@ -140,7 +140,7 @@ export default function EditGrowScreen({ route, navigation }: Props) {
   );
 }
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   keyboardAvoidingView: {
     flex: 1,
   },

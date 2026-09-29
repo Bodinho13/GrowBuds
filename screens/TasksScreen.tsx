@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -13,9 +13,9 @@ import TaskCard from "../components/TaskCard";
 
 type Props = NativeStackScreenProps<TaskStackParamList, "TasksList">;
 
-export default function TasksScreen({}: Props) {
-    const {growService} = useServices();
-    const {tasks, loading, refresh} = useTasks();
+export default function TasksScreen({ navigation }: Props) {
+    const { growService, taskService } = useServices();
+    const { tasks, loading, refresh } = useTasks();
 
     const [growNames, setGrowNames] = useState<Record<string, string>>({});
 
@@ -31,30 +31,52 @@ export default function TasksScreen({}: Props) {
     useFocusEffect(
         useCallback(() => {
             refresh();
-        }, [refresh])
+        }, [refresh]),
     );
-    
-    if(loading)
-        return <LoadingView/>
+
+    async function handleComplete(taskId: string) {
+        await taskService.complete(taskId);
+        await refresh();
+    }
+
+    if (loading) return <LoadingView />;
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>
-                Meine Aufgaben
-            </Text>
+            <View style={styles.header}>
+                <Text style={styles.title}>Meine Aufgaben</Text>
+                <Pressable
+                    style={styles.addButton}
+                    onPress={() => navigation.navigate("CreateTask")}
+                >
+                    <Text style={styles.addButtonText}>+</Text>
+                </Pressable>
+            </View>
 
             {tasks.length === 0 ? (
-                <EmptyState
-                    message="Keine Aufgaben vorhanden."
-                />
+                <EmptyState message="Keine Aufgaben vorhanden." />
             ) : (
                 <FlatList
                     data={tasks}
                     keyExtractor={(item) => item.id}
-                    renderItem={({item}) => (
+                    renderItem={({ item }) => (
                         <TaskCard
                             task={item}
-                            growName={item.growId ? growNames[item.growId] : undefined}
+                            growName={
+                                item.growId ? growNames[item.growId] : undefined
+                            }
+                            onEdit={() => 
+                                navigation.navigate("EditTask", {
+                                    taskId: item.id,
+                                })
+                            }
+                            onInfo={() => 
+                                navigation.navigate("TaskDetail", {
+                                    taskId: item.id,
+                                    relatedName: item.growId ? growNames[item.growId] : "Grow-Gruppe",
+                                })
+                            }
+                            onComplete={() => handleComplete(item.id)}
                         />
                     )}
                 />
@@ -69,10 +91,29 @@ const styles = StyleSheet.create({
         padding: Spacing.md,
         backgroundColor: Colors.background,
     },
+    header: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: Spacing.md,
+    },
     title: {
         fontSize: Typography.heading,
         fontWeight: "600",
         color: Colors.text,
         marginBottom: Spacing.md,
+    },
+    addButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: Colors.primary,
+    },
+    addButtonText: {
+        fontSize: Typography.title,
+        color: Colors.background,
+        lineHeight: 32,
     },
 });
