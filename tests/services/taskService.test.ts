@@ -531,4 +531,94 @@ describe("TaskService", () => {
         );
         expect(repository.update).not.toHaveBeenCalled();
     });
+
+    it("updates dueDate when a planned recurring task changes interval", async () => {
+        const lastCompletedAt = new Date("2026-09-07");
+        const existingTask: Task = {
+            ...task,
+            status: TaskStatus.Planned,
+            completed: true,
+            lastCompletedAt,
+            dueDate: new Date("2026-09-10"),
+            recurrence: {
+                interval: 3,
+                unit: "day",
+                timeToReopen: 70,
+            },
+        };
+
+        repository.getById.mockResolvedValue(existingTask);
+        repository.update.mockImplementation(async (updatedTask) => updatedTask);
+
+        const result = await taskService.update(existingTask.id, {
+            recurrence: {
+                interval: 5,
+                unit: "day",
+            },
+        });
+
+        expect(result?.recurrence?.interval).toBe(5);
+        expect(result?.dueDate).toEqual(new Date("2026-09-12"));
+        expect(result?.lastCompletedAt).toEqual(lastCompletedAt);
+    });
+
+    it("keeps dueDate when an open recurring task changes interval", async () => {
+        const lastCompletedAt = new Date("2026-09-07");
+        const existingTask: Task = {
+            ...task,
+            status: TaskStatus.Open,
+            completed: false,
+            lastCompletedAt,
+            dueDate: new Date("2026-09-10"),
+            recurrence: {
+                interval: 3,
+                unit: "day",
+                timeToReopen: 70,
+            },
+        };
+
+        repository.getById.mockResolvedValue(existingTask);
+        repository.update.mockImplementation(async (updatedTask) => updatedTask);
+
+        const result = await taskService.update(existingTask.id, {
+            recurrence: {
+                interval: 5,
+                unit: "day",
+            },
+        });
+
+        expect(result?.recurrence?.interval).toBe(5);
+        expect(result?.dueDate).toEqual(new Date("2026-09-10"));
+        expect(result?.lastCompletedAt).toEqual(lastCompletedAt);
+    });
+
+    it("keeps dueDate when an overdue recurring task changes interval", async () => {
+        const lastCompletedAt = new Date("2026-09-01");
+        const existingTask: Task = {
+            ...task,
+            status: TaskStatus.Overdue,
+            completed: false,
+            lastCompletedAt,
+            dueDate: new Date("2026-09-04"),
+            recurrence: {
+                interval: 3,
+                unit: "day",
+                timeToReopen: 70,
+            },
+        };
+
+        repository.getById.mockResolvedValue(existingTask);
+        repository.update.mockImplementation(async (updatedTask) => updatedTask);
+
+        const result = await taskService.update(existingTask.id, {
+            recurrence: {
+                interval: 5,
+                unit: "day",
+            },
+        });
+
+        expect(result?.recurrence?.interval).toBe(5);
+        expect(result?.dueDate).toEqual(new Date("2026-09-04"));
+        expect(result?.lastCompletedAt).toEqual(lastCompletedAt);
+    })
 });
