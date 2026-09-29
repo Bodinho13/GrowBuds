@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import TaskCard from "../../components/TaskCard";
 import { TaskUrgency } from "../../types/TaskUrgency";
+import { TaskStatus } from "../../types/TaskStatus";
 
 const task = {
     id: "task-001",
@@ -8,6 +9,7 @@ const task = {
     title: "Gießen",
     dueDate: new Date("2026-09-05"),
     urgency: TaskUrgency.Medium,
+    status: TaskStatus.Planned,
     completed: false,
     createdAt: new Date("2026-09-01"),
     updatedAt: new Date("2026-09-01"),
@@ -48,18 +50,20 @@ describe("TaskCard", () => {
         expect(screen.getByText("Dringlichkeit: medium")).toBeTruthy();
     });
 
-    it("calls onPress when pressed", () => {
-        const onPress = jest.fn();
-
+    it("opens the action menu when pressed", () => {
         render(<TaskCard
                 task={task}
                 growName="Mein erster Grow"
-                onPress={onPress}
             />
         );
+
+        expect(screen.queryByText("Bearbeiten")).toBeNull();
+
         fireEvent.press(screen.getByText("Gießen"));
 
-        expect(onPress).toHaveBeenCalledTimes(1);
+        expect(screen.getByText("Bearbeiten")).toBeTruthy();
+        expect(screen.getByText("Info")).toBeTruthy();
+        expect(screen.getByText("Abschließen")).toBeTruthy();
     });
 
     it("displays a completed task with completed styling", () => {

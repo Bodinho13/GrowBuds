@@ -84,7 +84,7 @@ describe("TaskDetailScreen", () => {
         expect(screen.getByText("Gießen")).toBeTruthy();
         expect(screen.getByText("Offen"));
         expect(screen.getByText(task.dueDate.toLocaleDateString("DE-de"))).toBeTruthy();
-        expect(screen.getByText("Erledigen")).toBeTruthy();
+        expect(screen.getByText("Erledigen ✓")).toBeTruthy();
     });
 
     it("completes an open task", async () => {
@@ -102,7 +102,7 @@ describe("TaskDetailScreen", () => {
 
         renderTaskDetailScreen(task.id);
 
-        fireEvent.press(screen.getByText("Erledigen"));
+        fireEvent.press(screen.getByText("Erledigen ✓"));
         await waitFor(() => {
             expect(completeMock).toHaveBeenCalledWith(task.id);
         });

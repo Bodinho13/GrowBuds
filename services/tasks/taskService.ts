@@ -56,23 +56,30 @@ class TaskService {
 
         this.validateTarget(dto.growId ?? existingTask.growId, dto.growGroupId ?? existingTask.growGroupId);
 
+        const recurrenceChanged = Object.prototype.hasOwnProperty.call(dto, "recurrence");
+        const newRecurrence = recurrenceChanged
+            ? dto.recurrence
+                ? {
+                    ...existingTask.recurrence,
+                    ...dto.recurrence,
+                    timeToReopen: 
+                        dto.recurrence.timeToReopen ??
+                        existingTask.recurrence?.timeToReopen ??
+                        70,
+                }
+                : undefined
+            :existingTask.recurrence;
+        let dueDate = dto.dueDate ?? existingTask.dueDate;
+
+        if(recurrenceChanged && newRecurrence && existingTask.recurrence
+            && existingTask.status === TaskStatus.Planned && existingTask.lastCompletedAt) {
+            dueDate = getNextDueDate(existingTask.lastCompletedAt, newRecurrence);
+        }
+
         const updatedTask: Task = {
             ...existingTask,
             ...dto,
-            recurrence: Object.prototype.hasOwnProperty.call(
-                    dto,
-                    "recurrence",
-                )
-                    ? dto.recurrence
-                        ? {
-                            ...existingTask.recurrence,
-                            ...dto.recurrence,
-                            timeToReopen: dto.recurrence.timeToReopen ??
-                                existingTask.recurrence?.timeToReopen ??
-                                70,
-                        }
-                        : undefined
-                    : existingTask.recurrence,
+            recurrence: newRecurrence,
             updatedAt: new Date(),
         };
 
