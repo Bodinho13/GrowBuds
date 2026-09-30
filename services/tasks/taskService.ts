@@ -80,6 +80,7 @@ class TaskService {
             ...existingTask,
             ...dto,
             recurrence: newRecurrence,
+            dueDate,
             updatedAt: new Date(),
         };
 
