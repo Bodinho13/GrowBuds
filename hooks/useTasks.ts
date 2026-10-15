@@ -6,14 +6,19 @@ export function useTasks() {
     const {taskService} = useServices();
 
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [archivedTasks, setArchivedTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState(true);
 
     const loadTasks = useCallback(async () => {
         setLoading(true);
 
         try {
-            const result = await taskService.getAll();
-            setTasks(result);
+            const [activeResult, archivedResult] = await Promise.all([
+                taskService.getAll(),
+                taskService.getArchived(),
+            ]);
+            setTasks(activeResult);
+            setArchivedTasks(archivedResult);
         } finally {
             setLoading(false);
         }
@@ -25,6 +30,7 @@ export function useTasks() {
 
     return {
         tasks,
+        archivedTasks,
         loading,
         refresh: loadTasks,
     };

@@ -14,11 +14,17 @@ class TaskService {
 
     async getAll(): Promise<Task[]> {
         const tasks = await this.repository.getAll();
+        const activeTasks = tasks.filter((task) => !task.isArchived);
         const now = new Date();
 
-        return Promise.all(tasks.map((task) => 
+        return Promise.all(activeTasks.map((task) => 
             this.synchronizeTaskStatus(task, now)
         ));
+    }
+
+    async getArchived(): Promise<Task[]> {
+        const tasks = await this.repository.getAll();
+        return tasks.filter((task) => task.isArchived);
     }
 
     async getById(id: string): Promise<Task | undefined> {
