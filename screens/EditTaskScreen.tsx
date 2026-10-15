@@ -37,6 +37,7 @@ export default function EditTaskScreen({ route, navigation }: Props) {
     const [recurrenceEnabled, setRecurrenceEnabled] = useState(false);
     const [recurrenceInterval, setRecurrenceInterval] = useState("1");
     const [recurrenceUnit, setRecurrenceUnit] = useState<"day" | "week">("day");
+    const [leadTimeDays, setLeadTimeDays] = useState("0");
 
     useEffect(() => {
         async function loadGrows() {
@@ -64,6 +65,10 @@ export default function EditTaskScreen({ route, navigation }: Props) {
             setRecurrenceInterval(String(task.recurrence.interval));
             setRecurrenceUnit(task.recurrence.unit);
         }
+
+        if (task.leadTimeDays !== undefined)
+            setLeadTimeDays(String(task.leadTimeDays));
+        else setLeadTimeDays("0");
     }, [task, grows]);
 
     async function handleSave() {
@@ -73,6 +78,10 @@ export default function EditTaskScreen({ route, navigation }: Props) {
             const interval = Number(recurrenceInterval);
             if (!Number.isInteger(interval) || interval <= 0) return;
         }
+
+        const leadTime = Number(leadTimeDays);
+        if(!recurrenceEnabled && (!Number.isInteger(leadTime) || leadTime < 0))
+            return;
 
         await taskService.update(taskId, {
             growId: selGrow?.id,
@@ -86,6 +95,7 @@ export default function EditTaskScreen({ route, navigation }: Props) {
                       timeToReopen: task?.recurrence?.timeToReopen ?? 70,
                   }
                 : undefined,
+            leadTimeDays: recurrenceEnabled ? undefined : leadTime,
         });
 
         navigation.goBack();
@@ -145,7 +155,9 @@ export default function EditTaskScreen({ route, navigation }: Props) {
                 />
 
                 <View style={styles.checkboxRow}>
-                    <Text style={styles.checkboxLabel}>Wiederholung aktivieren</Text>
+                    <Text style={styles.checkboxLabel}>
+                        Wiederholung aktivieren
+                    </Text>
                     <Pressable
                         style={[
                             styles.checkbox,
@@ -174,7 +186,7 @@ export default function EditTaskScreen({ route, navigation }: Props) {
                             label="Einheit"
                             value={recurrenceUnit}
                             options={["day", "week"]}
-                            getLabel={(value) => 
+                            getLabel={(value) =>
                                 value === "day" ? "Tag(e)" : "Woche(n)"
                             }
                             onChange={setRecurrenceUnit}
@@ -182,11 +194,25 @@ export default function EditTaskScreen({ route, navigation }: Props) {
                     </View>
                 )}
 
+                {!recurrenceEnabled && (
+                    <View style={styles.leadTimeContainer}>
+                        <Text style={styles.label}>Vorher öffnen</Text>
+                        <View style={styles.leadTimeRow}>
+                            <TextInput
+                                value={leadTimeDays}
+                                onChangeText={setLeadTimeDays}
+                                keyboardType="numeric"
+                                style={styles.leadTimeInput}
+                            />
+                            <Text style={styles.leadTimeUnit}>Tage vorher</Text>
+                        </View>
+                    </View>
+                )}
+
                 <Pressable
                     style={[
                         styles.button,
-                        (!selGrow || !title.trim()) &&
-                            styles.buttonDisabled,
+                        (!selGrow || !title.trim()) && styles.buttonDisabled,
                     ]}
                     onPress={handleSave}
                     disabled={!selGrow || !title.trim()}
@@ -200,97 +226,119 @@ export default function EditTaskScreen({ route, navigation }: Props) {
 
 const styles = StyleSheet.create({
     keyboardAvoidingView: {
-            flex: 1,
-        },
-        container: {
-            flexGrow: 1,
-            padding: Spacing.md,
-            paddingBottom: Spacing.xl,
-            backgroundColor: Colors.background,
-        },
-        label: {
-            fontSize: Typography.body,
-            fontWeight: "bold",
-            marginBottom: Spacing.xs,
-            color: Colors.text,
-        },
-        input: {
-            borderWidth: 1,
-            borderColor: Colors.border,
-            borderRadius: Radius.md,
-            backgroundColor: Colors.surface,
-            padding: Spacing.md,
-            fontSize: Typography.body,
-            marginBottom: Spacing.md,
-            color: Colors.text,
-        },
-        dateRow: {
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginTop: Spacing.md,
-        },
-        dateRowValue: {
-            flexDirection: "row",
-            justifyContent: "flex-end",
-            alignItems: "center",
-        },
-        checkboxRow: {
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: Spacing.md,
-            marginBottom: Spacing.md,
-        },
-        checkbox: {
-            width: 24,
-            height: 24,
-            borderWidth: 1,
-            borderColor: Colors.border,
-            borderRadius: Radius.sm,
-            backgroundColor: Colors.surface,
-            alignItems: "center",
-            justifyContent: "center",
-            marginRight: Spacing.sm,
-        },
-        checkboxChecked: {
-            backgroundColor: Colors.primary,
-            borderColor: Colors.primary,
-        },
-        checkboxCheck: {
-            color: Colors.background,
-            fontSize: Typography.body,
-            fontWeight: "bold",
-        },
-        checkboxLabel: {
-            color: Colors.text,
-            fontSize: Typography.body,
-        },
-        recurrenceContainer: {
-            marginTop: Spacing.sm,
-        },
-        intervalInput: {
-            borderWidth: 1,
-            borderColor: Colors.border,
-            borderRadius: Radius.md,
-            backgroundColor: Colors.surface,
-            padding: Spacing.md,
-            fontSize: Typography.body,
-            marginBottom: Spacing.md,
-            color: Colors.text,
-        },
-        button: {
-            backgroundColor: Colors.primary,
-            padding: Spacing.md,
-            borderRadius: Radius.md,
-            alignItems: "center",
-            marginTop: Spacing.lg,
-        },
-        buttonDisabled: {
-            opacity: 0.5,
-        },
-        buttonText: {
-            color: Colors.surface,
-            fontSize: Typography.body,
-            fontWeight: "bold",
-        },
+        flex: 1,
+    },
+    container: {
+        flexGrow: 1,
+        padding: Spacing.md,
+        paddingBottom: Spacing.xl,
+        backgroundColor: Colors.background,
+    },
+    label: {
+        fontSize: Typography.body,
+        fontWeight: "bold",
+        marginBottom: Spacing.xs,
+        color: Colors.text,
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: Colors.border,
+        borderRadius: Radius.md,
+        backgroundColor: Colors.surface,
+        padding: Spacing.md,
+        fontSize: Typography.body,
+        marginBottom: Spacing.md,
+        color: Colors.text,
+    },
+    dateRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginTop: Spacing.md,
+    },
+    dateRowValue: {
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        alignItems: "center",
+    },
+    checkboxRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: Spacing.md,
+        marginBottom: Spacing.md,
+    },
+    checkbox: {
+        width: 24,
+        height: 24,
+        borderWidth: 1,
+        borderColor: Colors.border,
+        borderRadius: Radius.sm,
+        backgroundColor: Colors.surface,
+        alignItems: "center",
+        justifyContent: "center",
+        marginRight: Spacing.sm,
+    },
+    checkboxChecked: {
+        backgroundColor: Colors.primary,
+        borderColor: Colors.primary,
+    },
+    checkboxCheck: {
+        color: Colors.background,
+        fontSize: Typography.body,
+        fontWeight: "bold",
+    },
+    checkboxLabel: {
+        color: Colors.text,
+        fontSize: Typography.body,
+    },
+    recurrenceContainer: {
+        marginTop: Spacing.sm,
+    },
+    intervalInput: {
+        borderWidth: 1,
+        borderColor: Colors.border,
+        borderRadius: Radius.md,
+        backgroundColor: Colors.surface,
+        padding: Spacing.md,
+        fontSize: Typography.body,
+        marginBottom: Spacing.md,
+        color: Colors.text,
+    },
+    leadTimeContainer: {
+        marginBottom: Spacing.md,
+    },
+    leadTimeRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: Spacing.sm,
+    },
+    leadTimeInput: {
+        width: 70,
+        borderWidth: 1,
+        borderColor: Colors.border,
+        borderRadius: Radius.md,
+        padding: Spacing.sm,
+        fontSize: Typography.body,
+        color: Colors.text,
+        textAlign: "center",
+    },
+    leadTimeUnit: {
+        fontSize: Typography.body,
+        color: Colors.textSecondary,
+    },
+    button: {
+        backgroundColor: Colors.primary,
+        padding: Spacing.md,
+        borderRadius: Radius.md,
+        alignItems: "center",
+        marginTop: Spacing.lg,
+    },
+    buttonDisabled: {
+        opacity: 0.5,
+    },
+    buttonText: {
+        color: Colors.surface,
+        fontSize: Typography.body,
+        fontWeight: "bold",
+    },
 });

@@ -40,6 +40,8 @@ class TaskService {
                 ...dto.recurrence,
                 timeToReopen: dto.recurrence.timeToReopen ?? 70,
             } : undefined,
+            leadTimeDays: dto.recurrence
+                ? undefined : Number(dto.leadTimeDays),
             completed: false,
             createdAt: now,
             updatedAt: now,

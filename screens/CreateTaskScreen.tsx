@@ -24,6 +24,7 @@ export default function CreateTaskScreen({ navigation }: Props) {
     const [recurrenceEnabled, setRecurrenceEnabled] = useState(false);
     const [recurrenceInterval, setRecurrenceInterval] = useState("1");
     const [recurrenceUnit, setRecurrenceUnit] = useState<"day" | "week">("day");
+    const [leadTimeDays, setLeadTimeDays] = useState("0");
 
     useEffect(() => {
         async function loadGrows() {
@@ -44,6 +45,11 @@ export default function CreateTaskScreen({ navigation }: Props) {
 
             if(!Number.isInteger(interval) || interval < 0)
                 return;
+        } else {
+            const leadTime = Number(leadTimeDays);
+
+            if(!Number.isInteger(leadTime) || leadTime < 0)
+                return;
         }
 
         await taskService.create({
@@ -56,6 +62,8 @@ export default function CreateTaskScreen({ navigation }: Props) {
                     interval: Number(recurrenceInterval),
                     unit: recurrenceUnit
                 } : undefined,
+            leadTimeDays: recurrenceEnabled
+                ? undefined : Number(leadTimeDays),
         });
 
         navigation.goBack();
@@ -147,6 +155,20 @@ export default function CreateTaskScreen({ navigation }: Props) {
                                 getLabel={(value) => value === "day" ? "Tag(e)" : "Woche(n)"}
                                 onChange={setRecurrenceUnit}
                             />
+                        </View>
+                    )}
+                    {!recurrenceEnabled && (
+                        <View style={styles.leadTimeContainer}>
+                            <Text style={styles.label}>Vorher öffnen</Text>
+                            <View style={styles.leadTimeRow}>
+                                <TextInput
+                                    value={leadTimeDays}
+                                    onChangeText={setLeadTimeDays}
+                                    keyboardType="numeric"
+                                    style={styles.leadTimeInput}
+                                />
+                                <Text style={styles.leadTimeUnit}>Tage vorher</Text>
+                            </View>
                         </View>
                     )}
                 </Section>
@@ -247,6 +269,28 @@ const styles = StyleSheet.create({
         fontSize: Typography.body,
         marginBottom: Spacing.md,
         color: Colors.text,
+    },
+    leadTimeContainer: {
+        marginBottom: Spacing.md,
+    },
+    leadTimeRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: Spacing.sm,
+    },
+    leadTimeInput: {
+        width: 70,
+        borderWidth: 1,
+        borderColor: Colors.border,
+        borderRadius: Radius.md,
+        padding: Spacing.sm,
+        fontSize: Typography.body,
+        color: Colors.text,
+        textAlign: "center",
+    },
+    leadTimeUnit: {
+        fontSize: Typography.body,
+        color: Colors.textSecondary,
     },
     button: {
         backgroundColor: Colors.primary,
