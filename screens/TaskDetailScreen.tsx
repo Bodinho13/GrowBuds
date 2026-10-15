@@ -55,6 +55,22 @@ export default function TaskDetailScreen({ route, navigation }: Props) {
                 </View>
             </Section>
 
+            {task.leadTimeDays !== undefined && (
+                <Section title="Vorlaufzeit">
+                    <View style={styles.infoRow}>
+                        <Text style={styles.label}>Aufgabe wird geöffnet</Text>
+                        <Text style={styles.value}>
+                            {task.leadTimeDays === 0
+                                ? "Am Fälligkeitstag"
+                                : `${task.leadTimeDays} 
+                                ${task.leadTimeDays === 1 ? "Tag" : "Tage"}
+                                vorher`
+                            }
+                        </Text>
+                    </View>
+                </Section>
+            )}
+
             {task.recurrence && (
                 <Section title="Wiederholung">
                     <View style={styles.infoRow}>
@@ -85,7 +101,7 @@ export default function TaskDetailScreen({ route, navigation }: Props) {
                 </Section>
             )}
 
-            {!task.completed && (
+            {!task.completed && !task.isArchived && (
                 <Pressable
                     style={styles.completeButton}
                     onPress={handleComplete}
