@@ -10,6 +10,7 @@ type Props = {
     onEdit?: () => void;
     onInfo?: () => void;
     onComplete?: () => void;
+    onArchive?: () => void;
 };
 
 export default function TaskCard({
@@ -18,6 +19,7 @@ export default function TaskCard({
     onEdit,
     onInfo,
     onComplete,
+    onArchive,
 }: Props) {
     const [expanded, setExpanded] = useState(false);
 
@@ -75,6 +77,10 @@ export default function TaskCard({
                             <Text style={styles.actionText}>Abschließen</Text>
                         </Pressable>
                     )}
+                    <Pressable style={styles.actionButton} onPress={onArchive}>
+                        <Text style={styles.actionIcon}>🗄️</Text>
+                        <Text style={styles.actionText}>Archivieren</Text>
+                    </Pressable>
                 </View>
             )}
         </View>
