@@ -28,7 +28,7 @@ export default function TaskCard({
     };
 
     return (
-        <View style={[styles.container, task.completed && styles.completed]}>
+        <View style={[styles.container, (task.completed || task.isArchived) && styles.completed]}>
             <Pressable onPress={handleCardPress}>
                 <View style={styles.content}>
                     <View style={styles.titleRow}>
@@ -42,7 +42,9 @@ export default function TaskCard({
                         </Text>
 
                         <View style={styles.statusBadge}>
-                            <Text style={styles.statusText}>{task.status}</Text>
+                            <Text style={styles.statusText}>
+                                {task.isArchived ? "Archiviert" : task.status}
+                            </Text>
                         </View>
                     </View>
 
@@ -58,7 +60,7 @@ export default function TaskCard({
                 </View>
             </Pressable>
 
-            {expanded && (
+            {expanded && !task.isArchived && (
                 <View style={styles.actionMenu}>
                     <Pressable style={styles.actionButton} onPress={onEdit}>
                         <Text style={styles.actionIcon}>⚙</Text>
@@ -142,11 +144,12 @@ const styles = StyleSheet.create({
         color: Colors.text,
     },
     actionText: {
-        fontSize: Typography.caption,
+        fontSize: Typography.small,
         color: Colors.text,
     },
     completed: {
-        opacity: 0.6,
+        opacity: 0.8,
+        backgroundColor: Colors.surface,
     },
     completedText: {
         textDecorationLine: "line-through",

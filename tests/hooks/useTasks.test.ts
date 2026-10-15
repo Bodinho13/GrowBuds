@@ -6,6 +6,7 @@ import { useTasks } from "../../hooks/useTasks";
 jest.mock("../../services/ServicesContext");
 
 const mockGetAll = jest.fn();
+const mockGetArchived = jest.fn();
 
 const tasks = [
     {
@@ -28,12 +29,14 @@ describe("useTasks", () => {
         (useServices as jest.Mock).mockReturnValue({
             taskService: {
                 getAll: mockGetAll,
+                getArchived: mockGetArchived,
             },
         });
     });
 
     it("loads tasks", async () => {
         mockGetAll.mockResolvedValue(tasks);
+        mockGetArchived.mockResolvedValue([]);
 
         const { result } = renderHook(() => useTasks());
 
@@ -42,10 +45,12 @@ describe("useTasks", () => {
         });
         expect(result.current.tasks).toEqual(tasks);
         expect(mockGetAll).toHaveBeenCalledTimes(1);
+        expect(mockGetArchived).toHaveBeenCalledTimes(1);
     });
 
     it("sets loading to false after loading tasks", async () => {
         mockGetAll.mockResolvedValue([]);
+        mockGetArchived.mockResolvedValue([]);
 
         const {result} = renderHook(() => useTasks());
         
@@ -57,6 +62,7 @@ describe("useTasks", () => {
 
     it("refreshes tasks", async () => {
         mockGetAll.mockResolvedValue(tasks);
+        mockGetArchived.mockResolvedValue([]);
 
         const { result } = renderHook(() => useTasks());
 
