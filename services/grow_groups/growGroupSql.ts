@@ -14,7 +14,7 @@ export const createGrowGroupSql = `
         createdAt,
         updatedAt,
         archivedAt,
-        isArchived,
+        isArchived
     )
     VALUES (?, ?, ?, ?, ?, ?)
 `;

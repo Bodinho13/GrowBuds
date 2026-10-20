@@ -29,6 +29,8 @@ export type GrowStackParamList = {
         growId:string;
         plantName: string;
     };
+
+    CreateGrowGroup: undefined;
 };
 
 export type TaskStackParamList = {
