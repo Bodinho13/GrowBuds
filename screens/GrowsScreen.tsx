@@ -130,6 +130,12 @@ export default function GrowsScreen({ navigation }: Props) {
             />
             <Pressable
                 style={styles.createButton}
+                onPress={() => navigation.navigate("CreateGrowGroup")}
+            >
+                <Text style={styles.createButtonText}>+ Neue Gruppe</Text>
+            </Pressable>
+            <Pressable
+                style={styles.createButton}
                 onPress={() => navigation.navigate("CreateGrow")}
             >
                 <Text style={styles.createButtonText}>
