@@ -7,6 +7,7 @@ import GrowDetailScreen from "../screens/GrowDetailScreen";
 import CreateGrowScreen from "../screens/CreateGrowScreen";
 import EditGrowScreen from "../screens/EditGrowScreen";
 import CreateGrowGroupScreen from "../screens/CreateGrowGroupScreen";
+import GrowGroupDetailScreen from "../screens/GrowGroupDetailScreen";
 
 const Stack = createNativeStackNavigator<GrowStackParamList>();
 
@@ -41,6 +42,12 @@ export default function GrowsStack() {
                 name="CreateGrowGroup"
                 component={CreateGrowGroupScreen}
                 options={{ title: "Neue Grow-Gruppe" }}
+            />
+
+            <Stack.Screen
+                name="GrowGroupDetail"
+                component={GrowGroupDetailScreen}
+                options={{ title: "Grow-Gruppe" }}
             />
         </Stack.Navigator>
     );
