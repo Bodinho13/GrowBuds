@@ -10,15 +10,33 @@ import { LoadingView } from "../components/common";
 import GrowCard from "../components/GrowCard";
 import { useServices } from "../services/ServicesContext";
 import { createPlantNameLookup } from "../services/plants/plantLookup";
+import { useGrowGroups } from "../hooks/useGrowGroups";
+import { GrowGroup } from "../types/GrowGroup";
+import { Grow } from "../types/Grow";
+import GrowGroupCard from "../components/GrowGroupCard";
 
 type Props = NativeStackScreenProps<GrowStackParamList, "GrowsList">;
+
+type GrowSection = | {
+    title: string;
+    type: "group";
+    data: GrowGroup[];
+} | {
+    title: string;
+    type: "grow";
+    data: Grow[];
+};
 
 export default function GrowsScreen({ navigation }: Props) {
     const { plantService } = useServices();
     const { grows, loading, refresh } = useGrows();
+    const { growGroups, loading: groupsLoading, refresh: groupsRefresh } = useGrowGroups();
 
     const activeGrows = grows.filter((grow) => !grow.isArchived);
     const archivedGrows = grows.filter((grow) => grow.isArchived);
+
+    const activeGroups = growGroups.filter((group) => !group.archivedAt);
+    const archivedGroups = growGroups.filter((group) => group.archivedAt);
 
     const [plantNames, setPlantNames] = useState<Record<string, string>>({});
 
@@ -31,42 +49,72 @@ export default function GrowsScreen({ navigation }: Props) {
         loadPlantNames();
     }, [plantService]);
 
-    const sections = [
+    const sections: GrowSection[] = [
+        {
+            title: "Grow-Gruppen",
+            data: activeGroups,
+            type: "group" as const,
+        },
         {
             title: "Aktive Grows",
             data: activeGrows,
+            type: "grow" as const,
+        },
+        {
+            title: "Archivierte Gruppen",
+            data: archivedGroups,
+            type: "group" as const,
         },
         {
             title: "Archivierte Grows",
             data: archivedGrows,
+            type: "grow" as const,
         },
     ];
 
     useFocusEffect(
         useCallback(() => {
             refresh();
-        },[refresh])
+            groupsRefresh();
+        },[refresh, groupsRefresh])
     );
 
-    if(loading)
+    function getGrowCount(growGroupId: string): number {
+        return grows.filter((grow) => grow.growGroupId === growGroupId).length;
+    }
+
+    if(loading || groupsLoading)
         return <LoadingView />
     
     return (
         <View style={styles.container}>
-            <SectionList
+            <SectionList<Grow | GrowGroup, GrowSection>
                 sections={sections}
                 keyExtractor={(item) => item.id}
-                renderItem={({item}) => (
-                    <GrowCard grow={item}
-                        plantName={plantNames[item.plantId]}
-                        onPress={() => {
-                            navigation.navigate("GrowDetail", {
-                                growId: item.id,
-                                plantName: plantNames[item.plantId],
+                renderItem={({item, section}) => {
+                    if(section.type === "group"){
+                        const growGroup = item as GrowGroup;
+
+                        return(
+                            <GrowGroupCard
+                                growGroup={growGroup}
+                                growCount={getGrowCount(growGroup.id)}
+                            />
+                        );
+                    }
+                    const grow = item as Grow;
+                    return(
+                        <GrowCard grow={grow}
+                            plantName={plantNames[grow.plantId]}
+                            onPress={() => {
+                                navigation.navigate("GrowDetail", {
+                                    growId: grow.id,
+                                    plantName: plantNames[grow.plantId],
                             })
                         }}
                     />
-                )}
+                    )
+                }}
                 renderSectionHeader={({ section }) => (
                     <Text style={styles.sectionTitle}>
                         {section.title}
