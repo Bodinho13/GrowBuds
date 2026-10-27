@@ -53,6 +53,7 @@ describe("TasksScreen", () => {
 
         (useTasks as jest.Mock).mockReturnValue({
             tasks,
+            archivedTasks: [],
             loading: false,
             refresh: mockRefresh,
         });
@@ -80,6 +81,7 @@ describe("TasksScreen", () => {
     it("displays the empty state when there are no tasks", () => {
         (useTasks as jest.Mock).mockReturnValue({
             tasks: [],
+            archivedTasks: [],
             loading: false,
             refresh: mockRefresh,
         });
@@ -94,6 +96,7 @@ describe("TasksScreen", () => {
     it("displays loading state", () => {
         (useTasks as jest.Mock).mockReturnValue({
             tasks: [],
+            archivedTasks: [],
             loading: true,
             refresh: mockRefresh,
         });

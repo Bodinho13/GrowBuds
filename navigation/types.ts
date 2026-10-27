@@ -31,6 +31,9 @@ export type GrowStackParamList = {
     };
 
     CreateGrowGroup: undefined;
+    GrowGroupDetail: {
+        growGroupId: string;
+    };
 };
 
 export type TaskStackParamList = {
