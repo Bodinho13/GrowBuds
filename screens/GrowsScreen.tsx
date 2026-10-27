@@ -99,6 +99,11 @@ export default function GrowsScreen({ navigation }: Props) {
                             <GrowGroupCard
                                 growGroup={growGroup}
                                 growCount={getGrowCount(growGroup.id)}
+                                onPress={() => 
+                                    navigation.navigate("GrowGroupDetail", {
+                                        growGroupId: growGroup.id,
+                                    })
+                                }
                             />
                         );
                     }
