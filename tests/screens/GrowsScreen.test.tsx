@@ -10,14 +10,19 @@ import {
 } from "@testing-library/react-native";
 import GrowsScreen from "../../screens/GrowsScreen";
 import { NavigationContainer } from "@react-navigation/native";
+import { useGrowGroups } from "../../hooks/useGrowGroups";
 
 jest.mock("../../hooks/useGrows");
+jest.mock("../../hooks/useGrowGroups");
 jest.mock("../../services/ServicesContext");
 
 const mockedUseGrows = jest.mocked(useGrows);
+const mockedUseGrowGroups = jest.mocked(useGrowGroups);
 const mockedUseServices = jest.mocked(useServices);
 const mockGetAllPlants = jest.fn();
 const mockPlantService = {getAll: mockGetAllPlants};
+const mockGrowService = {getAll: jest.fn()};
+const mockGrowGroupService = {getAll: jest.fn()};
 const mockNavigation = {
     navigate: jest.fn(),
     goBack: jest.fn(),
@@ -82,11 +87,19 @@ describe("GrowsScreen", () => {
         mockGetAllPlants.mockResolvedValue(plants);
 
         mockedUseServices.mockReturnValue({
+            growService: mockGrowService,
             plantService: mockPlantService,
+            growGroupService: mockGrowGroupService,
         } as any);
 
         mockedUseGrows.mockReturnValue({
             grows: [],
+            loading: false,
+            refresh: jest.fn(),
+        });
+
+        mockedUseGrowGroups.mockReturnValue({
+            growGroups: [],
             loading: false,
             refresh: jest.fn(),
         });
